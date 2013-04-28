@@ -17,6 +17,7 @@
 
 
 
+
 /* ****************************************************************************
  * DECLARACIÓN DE LA CLASE
  * ***************************************************************************/
@@ -32,7 +33,7 @@ private:
 	// Constructor privado.
 	// Crea un nuevo socket.
 	// PRE: 'sockfd' es un filedescriptor que identifica a un socket.
-	explicit Socket(int sockfd);
+	explicit Socket(const int sockfd);
 
 public:
 

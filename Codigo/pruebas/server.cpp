@@ -5,7 +5,6 @@
 
 
 int main(int argc, char* argv[]) {
-
 	std::cout << "Creando socket..." << std::endl;
 
 	Socket socket;

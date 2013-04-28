@@ -24,6 +24,7 @@
 
 
 
+
 /* ****************************************************************************
  * DEFINICIÓN DE LA CLASE
  * ***************************************************************************/
@@ -42,7 +43,7 @@ Socket::Socket() {
 // Constructor privado.
 // Crea un nuevo socket.
 // PRE: 'sockfd' es un filedescriptor que identifica a un socket.
-Socket::Socket(int sockfd) : sockfd(sockfd) { }
+Socket::Socket(const int sockfd) : sockfd(sockfd) { }
 
 
 // Destructor. 
@@ -148,8 +149,7 @@ Socket* Socket::aceptar() {
 // POST: devuelve el número de bytes que han sido enviados. Además, se 
 // lanza una excepción si no se pudo concretar el envio de datos.
 int Socket::enviar(const void* dato, int longDato) {
-	// Falta verificar que se enviaron todos los bytes
-	
+	// Realizamos el envío	
 	int numBytes = send(this->sockfd, dato, longDato, 0);
 
 	// Corroboramos si se produjo un error
@@ -167,8 +167,7 @@ int Socket::enviar(const void* dato, int longDato) {
 // host remoto a cerrado la conexión. Además, lanza una excepción si no se
 // pudo concretar la recepción de datos.
 int Socket::recibir(void* buffer, int longBuffer) {
-	// Falta verificar que se reciban todos los bytes
-
+	// Realizamos la recepción
 	int numBytes = recv(this->sockfd, buffer, longBuffer, 0);
 
 	// Corroboramos si se produjo un error
