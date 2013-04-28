@@ -1,0 +1,1 @@
+-legal/copyright,-build/include,-whitespace/tab,-whitespace/newline,+readability/function,-build/header_guard,-readability/braces,-whitespace/end_of_line,-whitespace/labels,-runtime/int,-readability/casting,-runtime/printf,-runtime/sizeof,-runtime/references,-readability/streams

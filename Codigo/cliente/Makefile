@@ -159,6 +159,3 @@ server: $(o_server_files)
 clean:
 	@$(RM) -fv *.o client server
 
-cpplint:
-	python ./cpplint.py --filter=`cat filter_options` `find -regextype posix-egrep -regex '.*\.(h|hpp|c|cpp)'`
-	
