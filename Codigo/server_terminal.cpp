@@ -25,7 +25,7 @@ void Terminal::run() {
 		getline(std::cin, comando);
 
 		if(comando == "q"){
-			this->servidor->apagar();
+			this->servidor->detener();
 			this->stop();
 		}
 	}

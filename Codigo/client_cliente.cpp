@@ -26,17 +26,18 @@ Cliente::~Cliente() {
 void Cliente::run() {
 
 	try {
+		
 		this->socket.conectar(nombreHost, puerto);
-		while(true);
-		std::string msg("GET-JOB-PART\n");
-		this->socket.enviar(msg.c_str(), msg.size()-1);
-		char bufout[100];
-		this->socket.recibir(bufout, 100-1);
-		std::cout << bufout << std::endl;
-
-		std::string msg1("q");
-		this->socket.enviar(msg1.c_str(), msg1.size()-1);
-		this->socket.cerrar();
+		// std::string msg("GET-JOB-PART\n");
+		
+		while(true) {
+			std::string msg;
+			std::cin >> msg; 
+			this->socket.enviar(msg.c_str(), msg.size()-1);
+			char bufout[100];
+			this->socket.recibir(bufout, 100-1);
+			std::cout << bufout << std::endl;
+		}
 	}
 	catch(const char* e) {
 		std::cout << e << std::endl;

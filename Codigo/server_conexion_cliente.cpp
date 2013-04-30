@@ -9,13 +9,13 @@
 
 
 
-
 // Constructor
 // PRE: 's' es un socket para la comunicación con el cliente; 'id' es 
 // número de cliente que se le ha sido asignado por el servidor; 'serv' es
 // una referencia al servidor al que pertenece la conexión.
-ConexionCliente::ConexionCliente(Socket *s, int id) : 
-	socket(s), id(id) { }
+ConexionCliente::ConexionCliente(Socket *s, int id, 
+	AsignadorTarea *asignadorTarea) : socket(s), id(id),
+	asignadorTarea(asignadorTarea) { }
 
 
 // Destructor
@@ -31,15 +31,8 @@ void ConexionCliente::run() {
 		char buf[100];
 
 		this->socket->recibir(buf, 100-1);
-
-		if(buf[0] == 'q') {
-			this->socket->cerrar();
-			stop();
-			std::cout << "Se desconectó cliente " << this->id << std::endl;
-			break;
-		}
-
-		this->socket->enviar(buf, 100-1);
+		std::string msg = this->asignadorTarea->darIndicacion();
+		this->socket->enviar(msg.c_str(), msg.size());
 		std::cout << "Echo al cliente " << this->id << std::endl;
 	}
 }

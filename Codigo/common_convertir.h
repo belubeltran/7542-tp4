@@ -31,6 +31,9 @@ public:
 
 	// Convierte un string en un integer
 	static int stoi(const std::string& s);
+
+	// Convierte un integer en un string
+	static std::string itos(const int i);
 };
 
 

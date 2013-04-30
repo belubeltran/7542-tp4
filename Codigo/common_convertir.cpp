@@ -60,3 +60,13 @@ int Convertir::stoi(const std::string& s) {
 	ss >> i;
 	return i;
 }
+
+
+// Convierte un integer en un string
+std::string Convertir::itos(const int i) {
+    std::ostringstream s;
+    s << i;
+    return s.str();
+}
+
+
