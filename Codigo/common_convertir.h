@@ -1,0 +1,34 @@
+//  
+//  common_convertir.h
+//  LIBRERIA CONVERTIR
+//  
+//  Librería de funciones conversoras.
+//  
+
+
+#ifndef CONVERTIR_H
+#define CONVERTIR_H
+
+
+#include <string.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <iomanip>
+
+
+
+class Convertir {
+public:
+
+	// Devuelve el equivalente entero de un caracter hexadecimal
+	static int htoi(char a);
+
+	// Convierte un unsigned int a un string de contenido hexadecimal
+	static std::string uitoh(uint8_t *a, size_t size);
+
+	// Convierte un string de contenido hexadecimal a un unsigned int
+	static uint8_t* htoui(std::string& s);
+};
+
+
+#endif
