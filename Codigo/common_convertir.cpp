@@ -51,3 +51,12 @@ uint8_t* Convertir::htoui(std::string& s) {
 
 	return a;
 }
+
+
+// Convierte un string en un integer
+int Convertir::stoi(const std::string& s) {
+	int i;
+	std::stringstream ss(s);
+	ss >> i;
+	return i;
+}

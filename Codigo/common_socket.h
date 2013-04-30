@@ -29,6 +29,7 @@ private:
 	int sockfd;							// Filedescriptor del socket.
 	struct sockaddr_in miDir;			// Dirección del socket.
 	struct sockaddr_in destinoDir;		// Dirección del socket destino.
+	bool activo;						// Sensa si esta activo el socket
 
 	// Constructor privado.
 	// Crea un nuevo socket.
@@ -105,6 +106,13 @@ public:
 	// POST: el socket quedará parcial o completamente inutilizable 
 	// dependiendo del modo elegido.
 	int cerrar(int modo = 2);
+
+	// Corrobora si el socket se encuentra activo. Que no este activo significa
+	// da cuenta de que el socket se encuentra inutilizable para la transmisión
+	// y recepción de datos.
+	// POST: devuelve true si el socket se encuentra activo o false en su
+	// defecto. 
+	bool estaActivo();
 };
 
 #endif

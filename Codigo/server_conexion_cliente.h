@@ -2,54 +2,37 @@
 //  common_conexion_cliente.h
 //  CLASE CONEXIONCLIENTE
 //  
-//  
-//  
-
 
 
 #ifndef CONEXION_CLIENTE_H
 #define CONEXION_CLIENTE_H
 
 
-#include <iostream>
+
 #include "common_thread.h"
+#include "common_socket.h"
 
 
 class ConexionCliente : public Thread {
 private:
 
-	// Servidor miServidor			//
+	// Servidor *miServidor;		// Servidor al que pertenece la conexión
 	Socket *socket;				// Socket de transmisión de datos
-	int id;
+	int id;						// Número de cliente
 
 public:
 
-	ConexionCliente() { }
+	// Constructor
+	// PRE: 's' es un socket para la comunicación con el cliente; 'id' es 
+	// número de cliente que se le ha sido asignado por el servidor; 'serv' es
+	// una referencia al servidor al que pertenece la conexión.
+	ConexionCliente(Socket *s, int id);
 
-	ConexionCliente(Socket *s, int id) : socket(s), id(id) { }
+	// Destructor
+	~ConexionCliente();
 
-	~ConexionCliente() {
-		this->socket->cerrar();
-	}
-
-	virtual void run() {
-		
-		while(true) {
-			char buf[100];
-
-			this->socket->recibir(buf, 100-1);
-
-			if(buf[0] == 'q') {
-				this->socket->cerrar();
-				stop();
-				std::cout << "Se desconectó cliente " << this->id << std::endl;
-				break;
-			}
-
-			this->socket->enviar(buf, 100-1);
-			std::cout << "Echo al cliente " << this->id << std::endl;
-		}
-	}
+	// Define tareas a ejecutar en el hilo.
+	virtual void run();
 };
 
 #endif

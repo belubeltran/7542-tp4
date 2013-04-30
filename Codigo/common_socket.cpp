@@ -37,6 +37,8 @@ Socket::Socket() {
 	// Creamos el socket
 	if((this->sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
 		throw "ERROR: No se ha podido crear el socket.";
+
+	this->activo = true;
 }
 
 
@@ -135,8 +137,10 @@ Socket* Socket::aceptar() {
 	unsigned sin_size = sizeof(struct sockaddr_in);
 	int sCliente = accept(sockfd, (struct sockaddr *)&destinoDir, &sin_size);
 
+	// Corroboramos si no se cerró el socket
+	if(!this->estaActivo()) return 0;
 	// Corroboramos si se produjo un error
-	if(sCliente < 0)
+	else if(sCliente < 0)
 		throw "ERROR: No se pudo aceptar la conexión";
 
 	return (new Socket(sCliente));
@@ -188,5 +192,15 @@ int Socket::recibir(void* buffer, int longBuffer) {
 // dependiendo del modo elegido.
 int Socket::cerrar(int modo) {
 	return shutdown(this->sockfd, modo);
+	if(modo == 2) this->activo = false;
 }
 
+
+// Corrobora si el socket se encuentra activo. Que no este activo significa
+// da cuenta de que el socket se encuentra inutilizable para la transmisión
+// y recepción de datos.
+// POST: devuelve true si el socket se encuentra activo o false en su
+// defecto. 
+bool Socket::estaActivo() {
+	return this->activo;
+}

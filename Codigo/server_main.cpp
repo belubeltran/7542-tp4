@@ -1,7 +1,13 @@
+//
+//  server_main.cpp
+//  Programa principal del SERVER
+//  
+
 
 #include <iostream>
 #include <stdlib.h>
 #include "server_servidor.h"
+#include "server_terminal.h"
 
 
 
@@ -13,13 +19,21 @@ int main(int argc, char* argv[]) {
 		return 1;
 	}
 
-	Servidor *serv = new Servidor(atoi(argv[1]), argv[2], atoi(argv[3]), 
+	// Creamos el servidor
+	Servidor *servidor = new Servidor(atoi(argv[1]), argv[2], atoi(argv[3]), 
 		atoi(argv[4]));
 
-	serv->start();
-	serv->join();
+	Terminal *terminal = new Terminal(servidor);
 
-	delete serv;
+	// Iniciamos su ejecución
+	servidor->start();
+	terminal->start();
+	
+	terminal->join();
+	servidor->join();
+
+	// delete servidor;
+	delete terminal;
 
 	return 0;
 }

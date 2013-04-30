@@ -28,6 +28,9 @@ public:
 
 	// Convierte un string de contenido hexadecimal a un unsigned int
 	static uint8_t* htoui(std::string& s);
+
+	// Convierte un string en un integer
+	static int stoi(const std::string& s);
 };
 
 
