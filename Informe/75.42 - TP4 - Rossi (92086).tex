@@ -25,6 +25,7 @@
 \usepackage{amssymb}
 \usepackage{float}
 \usepackage{graphicx}
+\usepackage{url}
 
 %% Fin PAQUETES
 
@@ -109,7 +110,12 @@
 % INTRODUCCIÓN
 \section{Introducción}
 	
-	[ Colocar texto aquí ]
+	Nuestros agentes han finalmente recuperado el código utilizado por los \textit{Draka} para encriptar y desencriptar sus mensajes. Si bien el código es relativamente simple, no ha sido posible encontrarle vulnerabilidades hasta el momento. Solo se sabe que los textos encriptados son ASCII \cite{ASCII} (códigos de carácter menores a 128) y que las claves solo utilizan dígitos ASCII. Aparentemente, debido a esto, la única opción para recuperar el texto será realizar un ataque de \textit{fuerza bruta} \cite{FB}.
+	\par
+	Las claves utilizadas son de longitud suficiente como para hacer que un ataque por fuerza bruta con una sola máquina lleve una excesiva cantidad de tiempo. Por lo tanto, se optará por una solución distribuida siguiendo un esquema cliente-servidor: el servidor se encargará de fraccionar el trabajo y los clientes de resolver cada una de estas partes, enviando los resultados al servidor.
+	\par
+	Detalles mas precisos de la problemática y de las condiciones preestablecidas se pueden encontrar en el enunciado del ejercicio\footnote{Se ha evitado hacer un relevamiento de la totalidad de la información que nos fue conferida, de manera de poder mantener el foco del informe en la forma en que se ha encarado la solución del problema.}.
+\bigskip
 
 
 
@@ -122,10 +128,15 @@
 \begin{itemize}
 	\itemsep=3pt \topsep=0pt \partopsep=0pt \parskip=0pt \parsep=0pt
 
-	\item Colocar texto aquí
+	\item Al producirse una solicitud de trabajo por parte de un cliente, si el servidor le indica que no hay trabajo para asignarle, ambos entes cerraran la conexión que los vinculaba;
 
+	\item El servidor almacenará todas las posibles claves, para una vez finalizada la actividad de todos los clientes, determinar si existe una ambig\"uedad o si es única la clave;
+
+	\item En los comandos ingresados a través de la terminal del servidor, se considera que el caractér de fin de línea, ``\textit{$\backslash$n}'', equivale a presionar enter una vez tipeado el comando deseado;
+
+	\item En el envío y en la recepción de datos se considera como fin de mensaje al caractér ``\textit{$\backslash$n}'' establecido por el protocolo.
 \end{itemize}
-\smallskip
+\medskip
 
 
 
@@ -140,12 +151,25 @@
 
 
 
+% DISEÑO - Cliente
+\subsection{Cliente}
+
+	\bigskip
+
+
+
+% DISEÑO - Servidor
+\subsection{Servidor}
+
+	\bigskip
+
+
 
 
 % ESQUEMA DEL DISEÑO
 \section{Esquema del diseño}
 
-	A continuación, en la \textit{Figura 2}, se ilustra el diagrama de flujo que representa la secuencia de ejecución de los distintos procesos que se deben llevar a lo largo de cada parte del programa.
+	A continuación, en la \textit{Figura 2}, se ilustra el diagrama de clases principal correspondiente al lado Servidor, donde se representa la relación entre las entidades que participan en dicha parte del sistema. 
 
 %\newpage
 % Figura 2
@@ -155,6 +179,31 @@
 %	\medskip
 %	\caption{Diagrama de flujo representativo de la solución.}
 %\end{figure}
+
+
+	En la \textit{Figura 3}, se ilustra el diagrama de clases principal correspondiente al lado Cliente, mostrando aquí también la relación entre entidades que partician en esta otra parte del sistema.
+
+%\newpage
+% Figura 3
+%\begin{figure}[h]
+%	\centering
+%	\includegraphics[width=0.968976\textwidth]{images/diagrama02.png}
+%	\medskip
+%	\caption{Diagrama de flujo representativo de la solución.}
+%\end{figure}
+\bigskip\bigskip
+
+
+
+
+% REFERENCIAS
+\begin{thebibliography}{99}
+
+	\bibitem{ASCII} Código ASCII, \url{http://en.wikipedia.org/wiki/ASCII}
+	\bibitem{FB} Ataque por Fuerza Bruta (Brute-force attack), \url{http://en.wikipedia.orig/wiki/Brute-force_attack}
+	\end{thebibliography}
+
+\newpage
 
 
 \end{document}

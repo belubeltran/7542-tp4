@@ -113,22 +113,12 @@ Socket* Socket::aceptar() {
 }
 
 
-// Envía datos a través del socket.
-// PRE: 'dato' es el dato que se desea enviar; 'longDato' es la longitud 
-// de los datos en bytes.
-// POST: devuelve el número de bytes que han sido enviados ó -1 si no se 
-// pudo concretar el envio de datos.
-int Socket::enviar(const void* dato, int longDato) {
-	return send(this->sockfd, dato, longDato, 0);
-}
-
-
 // Envía datos a través del socket de forma completa.
 // PRE: 'dato' es el dato que se desea enviar; 'longDato' es la longitud 
 // de los datos en bytes.
 // POST: devuelve 0 si se ha realizado el envio correctamente o -1 en caso
 // de error.
-int Socket::enviar_todo(const void* dato, int longDato){
+int Socket::enviar(const void* dato, int longDato){
 	// Cantidad de bytes que han sido enviados
 	int bytesTotal = 0;
 	// Cantidad de bytes que faltan enviar
@@ -138,14 +128,14 @@ int Socket::enviar_todo(const void* dato, int longDato){
 
 	while(bytesRestantes > 0) {
 		// Realizamos envío de bytes
-		n = enviar(dato, bytesRestantes);
+		n = send(this->sockfd, (char *) dato + bytesTotal, bytesRestantes, 0);
 		
 		// En caso de error, salimos
 		if(n == -1)	break;	
 
 		// Incrementamos la cantidad de bytes ya enviados
 		bytesTotal += n;
-
+		
 		// Decrementamos cantidad de bytes restantes
 		bytesRestantes -= n;
 	}

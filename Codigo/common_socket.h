@@ -78,19 +78,12 @@ public:
 	// POST: lanza una excepción si no pudo aceptar la conexión.
 	Socket* aceptar();
 
-	// Envía datos a través del socket.
-	// PRE: 'dato' es el dato que se desea enviar; 'longDato' es la longitud 
-	// de los datos en bytes.
-	// POST: devuelve el número de bytes que han sido enviados. Además, se 
-	// lanza una excepción si no se pudo concretar el envio de datos.
-	int enviar(const void* dato, int longDato);
-
 	// Envía datos a través del socket de forma completa.
 	// PRE: 'dato' es el dato que se desea enviar; 'longDato' es la longitud 
 	// de los datos en bytes.
 	// POST: devuelve 0 si se ha realizado el envio correctamente o -1 en caso
 	// de error.
-	int enviar_todo(const void* dato, int longDato);
+	int enviar(const void* dato, int longDato);
 
 	// Recibe datos a través del socket.
 	// PRE: 'buffer' es el buffer en donde se va a depositar la información 

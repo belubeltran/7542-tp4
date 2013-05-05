@@ -43,7 +43,7 @@ void Cliente::run() {
 	
 	// Enviamos petición de parte de trabajo
 	std::string msg_out(C_GET_JOB_PART + FIN_MENSAJE);
-	this->socket.enviar_todo(msg_out.c_str(), msg_out.size());
+	this->socket.enviar(msg_out.c_str(), msg_out.size());
 
 	// Recibimos respuesta del servidor
 	std::stringstream msg_in(recibirMensaje());
@@ -71,7 +71,7 @@ void Cliente::run() {
 
 		// Avisamos al servidor la finalización del trabajo
 		msg_out = C_JOB_PART_FINISHED + " " + numParte;
-		this->socket.enviar_todo(msg_out.c_str(), msg_out.size());
+		this->socket.enviar(msg_out.c_str(), msg_out.size());
 	}
 	else {
 		std::cout << "Mensaje inválido del servidor" << std::endl;
@@ -86,30 +86,33 @@ void Cliente::run() {
 // POST: devuelve un string con el mensaje recibido
 std::string Cliente::recibirMensaje() {
 	// Variables auxiliares
-	char bufout[BUFFER_TAMANIO];
+	char bufout[BUFFER_TAMANIO+1];
 	std::string msg_in;
 	bool estaRecibiendo = true;
 
 	// Iteramos hasta recibir el mensaje completo
 	while(estaRecibiendo) {
-		bufout[BUFFER_TAMANIO-1] = '\0';
+		bufout[BUFFER_TAMANIO] = '\0';
 		
-		this->socket.recibir(bufout, BUFFER_TAMANIO-1);
-		
+		// Recibimos datos. En caso de error devolvemos cadena vacía
+		if(this->socket.recibir(bufout, BUFFER_TAMANIO) == -1) return "";
+
+		// Agregamos datos a los datos ya recibidos
 		std::string sbufout(bufout);
 		msg_in.append(sbufout);
 
-		// std::cout << n << " - " << bufout << std::endl;
-		// std::cout << "size: " << sizeof(bufout) << std::endl;
-
-		if(bufout[BUFFER_TAMANIO-2] == FIN_MENSAJE) break;
-		else if(!bufout[BUFFER_TAMANIO-2])
-			for(int i = 0; i <= BUFFER_TAMANIO-2; i++)
+		// Comprobamos si hemos recibido el mensaje completo
+		if(bufout[BUFFER_TAMANIO-1] == FIN_MENSAJE) break;
+		// Si el buffer no se encuentra lleno, buscamos el fin de mensaje
+		else if(!bufout[BUFFER_TAMANIO-1]) {
+			for(int i = 0; i <= BUFFER_TAMANIO-1; i++) {
 				if(bufout[i] == FIN_MENSAJE) {
 					// Se recibió el marcador de fin de mensaje
 					estaRecibiendo = false;
 					break;
 				}
+			}
+		}
 	}
 
 	return msg_in;
@@ -120,7 +123,7 @@ std::string Cliente::recibirMensaje() {
 // aquellas claves que pasen la prueba.
 void Cliente::procesarClaves(std::string msgEncriptado, int numDig, 
 	int claveIni, int claveFin) {
-	
+	// Iteramos hasta procesar todo el rango de claves
 	for(int i = claveIni; i <= claveFin; i++) {
 		// Convertimos clave en string
 		std::string clave(Convertir::itos(i));
@@ -133,8 +136,9 @@ void Cliente::procesarClaves(std::string msgEncriptado, int numDig,
 		if (CodigoDraka::probarClave(uintMsgEncriptado, len, clave)) {
 			// Armamos mensaje de acuerdo al protocolo
 			std::string msg_out(C_POSSIBLE_KEY + " " + clave);
-			// Enviamos mensaje
-			this->socket.enviar_todo(msg_out.c_str(), msg_out.size());
+			
+			// Enviamos mensaje de posible clave
+			this->socket.enviar(msg_out.c_str(), msg_out.size());
 		}
 	}
 }

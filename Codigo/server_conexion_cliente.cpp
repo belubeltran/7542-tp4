@@ -31,7 +31,7 @@ void ConexionCliente::run() {
 	this->socket->recibir(buf, 100-1);
 	std::cout << "Recibi: " << buf << std::endl;
 	std::string msg = this->asignadorTarea->darIndicacion();
-	this->socket->enviar_todo(msg.c_str(), msg.size());
+	this->socket->enviar(msg.c_str(), msg.size());
 
 	while(this->socket->recibir(buf, 100-1)) {
 		std::cout << "Recibi: " << buf << std::endl;
