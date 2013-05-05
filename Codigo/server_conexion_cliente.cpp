@@ -32,5 +32,11 @@ void ConexionCliente::run() {
 	std::cout << "Recibi: " << buf << std::endl;
 	std::string msg = this->asignadorTarea->darIndicacion();
 	this->socket->enviar_todo(msg.c_str(), msg.size());
+
+	while(this->socket->recibir(buf, 100-1)) {
+		std::cout << "Recibi: " << buf << std::endl;
+	}
+
+
 	std::cout << "Echo al cliente " << this->id << std::endl;
 }

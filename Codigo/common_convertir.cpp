@@ -41,7 +41,6 @@ uint8_t* Convertir::htoui(std::string& s) {
 	int j = 0;
 
 	for(unsigned int i = 0; i < s.size(); i += 2){
-
 		uint8_t pri = Convertir::htoi(s[i]);
 		uint8_t sec = Convertir::htoi(s[i+1]);
 

@@ -9,18 +9,24 @@
 #ifndef CLIENTE_H
 #define CLIENTE_H
 
-#include <iostream>
+
 #include "common_thread.h"
 #include "common_socket.h"
 
 
 
+
+/* ****************************************************************************
+ * DECLARACIÓN DE LA CLASE
+ * ***************************************************************************/
+
+
 class Cliente : public Thread {
 private:
 
-	Socket socket;								// Socket con el que se comunica
-	int puerto;									// Puerto de conexión.
-	std::string nombreHost;						// Nombre del host de conexión
+	Socket socket;						// Socket con el que se comunica
+	int puerto;							// Puerto de conexión.
+	std::string nombreHost;				// Nombre del host de conexión
 
 	// Recibe un mensaje entrante
 	// POST: devuelve un string con el mensaje recibido
@@ -28,7 +34,8 @@ private:
 
 	// Prueba una a una las claves en el código Draka y envía al servidor
 	// aquellas claves que pasen la prueba.
-	void procesarClaves(std::string& claveMin, std::string& claveMax);
+	void procesarClaves(std::string msgEncriptado, int numDig, 
+		int claveIni, int claveFin);
 
 public:
 

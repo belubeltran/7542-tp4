@@ -12,7 +12,7 @@
 
 // Código utilizado por los Draka para encriptar y desencriptar mensajes.
 void CodigoDraka::ed(uint8_t *data, size_t ndata, const uint8_t *key,size_t nkey) {
-uint8_t i = 0, j = 0, s[256];
+	uint8_t i = 0, j = 0, s[256];
 	do{ 
 		s[i] = i; 
 	} while (++i);

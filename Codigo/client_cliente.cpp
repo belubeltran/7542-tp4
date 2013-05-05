@@ -4,10 +4,19 @@
 //   
 
 
+#include <iostream>
 #include <sstream>
 #include "client_cliente.h"
 #include "common_convertir.h"
 #include "common_codigo_draka.h"
+#include "common_protocolo.h"
+
+
+
+
+/* ****************************************************************************
+ * DEFINICIÓN DE LA CLASE
+ * ***************************************************************************/
 
 
 // Constructor
@@ -22,40 +31,48 @@ Cliente::~Cliente() { }
 // Define tareas a ejecutar en el hilo.
 // Mantiene la comunicación con el servidor.
 void Cliente::run() {
-
+	// Creamos socket
 	this->socket.crear();
 	this->socket.conectar(nombreHost, puerto);
 	
-	// Enviamos petición de obtención de parte de trabajo
-	std::string msg_out("GET-JOB-PART\n");
-	int n = this->socket.enviar_todo(msg_out.c_str(), msg_out.size());
-	std::cout << "Envio: " << n << std::endl;
-
+	// Enviamos petición de parte de trabajo
+	std::string msg_out(C_GET_JOB_PART + FIN_MENSAJE);
+	this->socket.enviar_todo(msg_out.c_str(), msg_out.size());
 
 	// Recibimos respuesta del servidor
 	std::stringstream msg_in(recibirMensaje());
-	// std::cout << msg_in << std::endl;
 
 	// Parseamos instrucción recibida
 	std::string instruccion;
 	msg_in >> instruccion;
 
+
 	// Caso en que no hay trabajo para realizar
-	if(instruccion == "NO-JOB-PART") {
+	if(instruccion == S_NO_JOB_PART) {
 		// Desconectamos el socket y salimos
-		std::cout << "NO-JOB-PART" << std::endl;
+		std::cout << S_NO_JOB_PART << std::endl;
 	}
-	else if(instruccion == "JOB-PART") {
-		std::cout << "A procesar se ha dicho..." << std::endl;
+	else if(instruccion == S_JOB_PART) {
+		// Variables auxiliares para datos
+		std::string msgEncriptado, numParte;
+		int numDig, claveIni, claveFin;
+
+		// Parseamos y obtenemos datos del mensaje
+		msg_in >> msgEncriptado >> numParte >> numDig >> claveIni >> claveFin;
+
+		// Probamos el rango de claves indicado por el servidor
+		procesarClaves(msgEncriptado, numDig, claveIni, claveFin);
+
+		// Avisamos al servidor la finalización del trabajo
+		msg_out = C_JOB_PART_FINISHED + " " + numParte;
+		this->socket.enviar_todo(msg_out.c_str(), msg_out.size());
 	}
-	else if(instruccion != "JOB-PART") {
+	else {
 		std::cout << "Mensaje inválido del servidor" << std::endl;
 	}
 
 	// Desconectamos el socket
 	this->socket.cerrar();
-
-	return;
 }
 
 
@@ -79,16 +96,14 @@ std::string Cliente::recibirMensaje() {
 		// std::cout << n << " - " << bufout << std::endl;
 		// std::cout << "size: " << sizeof(bufout) << std::endl;
 
-		if(bufout[98] == '\n') break;
+		if(bufout[98] == FIN_MENSAJE) break;
 		else if(!bufout[98])
-		{
 			for(int i = 0; i <= 98; i++)
-				if(bufout[i] == '\n') {
+				if(bufout[i] == FIN_MENSAJE) {
 					// Se recibió el marcador de fin de mensaje
 					estaRecibiendo = false;
 					break;
 				}
-		}
 	}
 
 	return msg_in;
@@ -97,9 +112,23 @@ std::string Cliente::recibirMensaje() {
 
 // Prueba una a una las claves en el código Draka y envía al servidor
 // aquellas claves que pasen la prueba.
-void Cliente::procesarClaves(std::string& claveMin, std::string& claveMax) {
+void Cliente::procesarClaves(std::string msgEncriptado, int numDig, 
+	int claveIni, int claveFin) {
+	
+	for(int i = claveIni; i <= claveFin; i++) {
+		// Convertimos clave en string
+		std::string clave(Convertir::itos(i));
 
+		// Convertimos el mensaje encriptado en el tipo necesario
+		uint8_t *uintMsgEncriptado = Convertir::htoui(msgEncriptado);
+		size_t len = msgEncriptado.size() / 2;
+
+		// Probamos la clave
+		if (CodigoDraka::probarClave(uintMsgEncriptado, len, clave)) {
+			// Armamos mensaje de acuerdo al protocolo
+			std::string msg_out(C_POSSIBLE_KEY + " " + clave);
+			// Enviamos mensaje
+			this->socket.enviar_todo(msg_out.c_str(), msg_out.size());
+		}
+	}
 }
-
-
-
