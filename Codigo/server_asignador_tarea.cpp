@@ -47,6 +47,7 @@ std::string AsignadorTarea::darIndicacion() {
 	std::string claveFin = claveFinalDeRangoDeClaves();
 	std::string ind("");
 	
+	// Generamos el mensaje
 	ind += "JOB-PART " + this->msgEncriptado + " " + 
 		Convertir::itos(this->numPartes) + " " + 
 		Convertir::itos(this->numDigitosClave) + " " + claveIni + " " +

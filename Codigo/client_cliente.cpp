@@ -12,6 +12,12 @@
 #include "common_protocolo.h"
 
 
+namespace {
+	// Constante para el buffer
+	const int BUFFER_TAMANIO = 100;
+}
+
+
 
 
 /* ****************************************************************************
@@ -80,15 +86,15 @@ void Cliente::run() {
 // POST: devuelve un string con el mensaje recibido
 std::string Cliente::recibirMensaje() {
 	// Variables auxiliares
-	char bufout[100];
+	char bufout[BUFFER_TAMANIO];
 	std::string msg_in;
 	bool estaRecibiendo = true;
 
 	// Iteramos hasta recibir el mensaje completo
 	while(estaRecibiendo) {
-		bufout[99] = '\0';
+		bufout[BUFFER_TAMANIO-1] = '\0';
 		
-		this->socket.recibir(bufout, 100-1);
+		this->socket.recibir(bufout, BUFFER_TAMANIO-1);
 		
 		std::string sbufout(bufout);
 		msg_in.append(sbufout);
@@ -96,9 +102,9 @@ std::string Cliente::recibirMensaje() {
 		// std::cout << n << " - " << bufout << std::endl;
 		// std::cout << "size: " << sizeof(bufout) << std::endl;
 
-		if(bufout[98] == FIN_MENSAJE) break;
-		else if(!bufout[98])
-			for(int i = 0; i <= 98; i++)
+		if(bufout[BUFFER_TAMANIO-2] == FIN_MENSAJE) break;
+		else if(!bufout[BUFFER_TAMANIO-2])
+			for(int i = 0; i <= BUFFER_TAMANIO-2; i++)
 				if(bufout[i] == FIN_MENSAJE) {
 					// Se recibió el marcador de fin de mensaje
 					estaRecibiendo = false;
