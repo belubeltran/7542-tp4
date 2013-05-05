@@ -8,10 +8,10 @@
 #define SERVIDOR_H
 
 #include <iostream>
-
+#include <list>
 #include "common_thread.h"
 #include "common_socket.h"
-#include "server_oyente.h"
+#include "server_conexion_cliente.h"
 #include "server_asignador_tarea.h"
 
 
@@ -27,6 +27,8 @@ private:
 
 	std::list<ConexionCliente*> *clientes;		// Lista de clientes conectados
 	int puerto;									// Puerto en el que se escucha.
+	Socket socket;								// Socket en el que escucha el 
+												// servidor.
 	int numDigitosClave;						// Número de dígitos de la
 												// clave.
 	int numClientes;							// Número de clientes entre los
@@ -35,7 +37,6 @@ private:
 												// conectados
 	std::string msgEncriptado;					// Mensaje encriptado en hexa
 	AsignadorTarea *asignadorTarea;				// Asignador de tareas
-	Oyente *oyente;								// Oyente de conexiones
 
 public:
 

@@ -39,13 +39,15 @@ private:
 public:
 
 	// Constructor.
-	// Crea un nuevo socket.
-	// POST: ĺanza una excepción si no se ha podido crear el socket.
 	Socket();
 
 	// Destructor. 
 	// Cierra el socket.
 	~Socket();
+
+	// Crea el socket
+	// POST: lanza una excepción si no se logra llevar a cabo la creación.	
+	void crear();
 
 	// Enlaza (asocia) al socket con un puerto y una dirección IP.
 	// PRE: 'ip' es una cadena que contiene el nombre del host o la dirección
@@ -89,12 +91,18 @@ public:
 	// lanza una excepción si no se pudo concretar el envio de datos.
 	int enviar(const void* dato, int longDato);
 
+	// Envía datos a través del socket de forma completa.
+	// PRE: 'dato' es el dato que se desea enviar; 'longDato' es la longitud 
+	// de los datos en bytes.
+	// POST: devuelve 0 si se ha realizado el envio correctamente o -1 en caso
+	// de error.
+	int enviar_todo(const void* dato, int longDato);
+
 	// Recibe datos a través del socket.
 	// PRE: 'buffer' es el buffer en donde se va a depositar la información 
 	// leida; 'longBuffer' es la longitud máxima del buffer.
 	// POST: devuelve el número de bytes que han sido leidos o 0 (cero) si el
-	// host remoto a cerrado la conexión. Además, lanza una excepción si no se
-	// pudo concretar la recepción de datos.
+	// host remoto a cerrado la conexión.
 	int recibir(void* buffer, int longBuffer);
 
 	// Cierra el socket. Brinda distintos tipos de formas de cerrar permitiendo

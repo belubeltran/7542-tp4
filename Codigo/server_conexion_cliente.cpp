@@ -26,13 +26,11 @@ ConexionCliente::~ConexionCliente() {
 
 // Define tareas a ejecutar en el hilo.
 void ConexionCliente::run() {
-	
-	while(this->isActive()) {
-		char buf[100];
 
-		this->socket->recibir(buf, 100-1);
-		std::string msg = this->asignadorTarea->darIndicacion();
-		this->socket->enviar(msg.c_str(), msg.size());
-		std::cout << "Echo al cliente " << this->id << std::endl;
-	}
+	char buf[100];
+	this->socket->recibir(buf, 100-1);
+	std::cout << "Recibi: " << buf << std::endl;
+	std::string msg = this->asignadorTarea->darIndicacion();
+	this->socket->enviar_todo(msg.c_str(), msg.size());
+	std::cout << "Echo al cliente " << this->id << std::endl;
 }

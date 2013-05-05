@@ -22,7 +22,7 @@
 
 #include "common_socket.h"
 
-
+#include <iostream>
 
 
 /* ****************************************************************************
@@ -31,27 +31,28 @@
 
 
 // Constructor.
-// Crea un nuevo socket.
-// POST: ĺanza una excepción si no se ha podido crear el socket.
-Socket::Socket() {
-	// Creamos el socket
-	if((this->sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-		throw "ERROR: No se ha podido crear el socket.";
-
-	this->activo = true;
-}
+Socket::Socket() : activo(false) { }
 
 
 // Constructor privado.
 // Crea un nuevo socket.
 // PRE: 'sockfd' es un filedescriptor que identifica a un socket.
-Socket::Socket(const int sockfd) : sockfd(sockfd) { }
+Socket::Socket(const int sockfd) : sockfd(sockfd), activo(true) { }
 
 
 // Destructor. 
 // Cierra el socket.
-Socket::~Socket() {
-	close(this->sockfd);
+Socket::~Socket() { }
+
+
+// Crea el socket
+// POST: lanza una excepción si no se logra llevar a cabo la creación.
+void Socket::crear() {
+	if((this->sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+		throw "ERROR: No se ha podido crear el socket.";
+
+	// Cambiamos el estado del socket
+	this->activo = true;
 }
 
 
@@ -150,17 +151,41 @@ Socket* Socket::aceptar() {
 // Envía datos a través del socket.
 // PRE: 'dato' es el dato que se desea enviar; 'longDato' es la longitud 
 // de los datos en bytes.
-// POST: devuelve el número de bytes que han sido enviados. Además, se 
-// lanza una excepción si no se pudo concretar el envio de datos.
+// POST: devuelve el número de bytes que han sido enviados ó -1 si no se 
+// pudo concretar el envio de datos.
 int Socket::enviar(const void* dato, int longDato) {
-	// Realizamos el envío	
-	int numBytes = send(this->sockfd, dato, longDato, 0);
+	return send(this->sockfd, dato, longDato, 0);
+}
 
-	// Corroboramos si se produjo un error
-	if(numBytes == -1)
-		throw "ERROR: No se pudo realizar el envío de datos.";
 
-	return numBytes;
+// Envía datos a través del socket de forma completa.
+// PRE: 'dato' es el dato que se desea enviar; 'longDato' es la longitud 
+// de los datos en bytes.
+// POST: devuelve 0 si se ha realizado el envio correctamente o -1 en caso
+// de error.
+int Socket::enviar_todo(const void* dato, int longDato){
+	// Cantidad de bytes que han sido enviados
+	int bytesTotal = 0;
+	// Cantidad de bytes que faltan enviar
+	int bytesRestantes = longDato;
+	// Variable auxiliar
+	int n;
+
+	while(bytesRestantes > 0) {
+		// Realizamos envío de bytes
+		n = enviar(dato, bytesRestantes);
+		
+		// En caso de error, salimos
+		if(n == -1)	break;	
+
+		// Incrementamos la cantidad de bytes ya enviados
+		bytesTotal += n;
+
+		// Decrementamos cantidad de bytes restantes
+		bytesRestantes -= n;
+	}
+
+	return (n == -1) ? -1:0;
 }
 
 
@@ -168,17 +193,12 @@ int Socket::enviar(const void* dato, int longDato) {
 // PRE: 'buffer' es el buffer en donde se va a depositar la información 
 // leida; 'longBuffer' es la longitud máxima del buffer.
 // POST: devuelve el número de bytes que han sido leidos o 0 (cero) si el
-// host remoto a cerrado la conexión. Además, lanza una excepción si no se
-// pudo concretar la recepción de datos.
+// host remoto a cerrado la conexión.
 int Socket::recibir(void* buffer, int longBuffer) {
-	// Realizamos la recepción
-	int numBytes = recv(this->sockfd, buffer, longBuffer, 0);
-
-	// Corroboramos si se produjo un error
-	if(numBytes == -1)
-		throw "ERROR: No se pudo realizar el envío de datos.";
-
-	return numBytes;
+	// Limpiamos buffer
+	memset(buffer, '\0', longBuffer);
+	// Recibimos datos en buffer
+	return recv(this->sockfd, buffer, longBuffer, 0);
 }
 
 
@@ -191,8 +211,8 @@ int Socket::recibir(void* buffer, int longBuffer) {
 // POST: el socket quedará parcial o completamente inutilizable 
 // dependiendo del modo elegido.
 int Socket::cerrar(int modo) {
-	return shutdown(this->sockfd, modo);
 	if(modo == 2) this->activo = false;
+	return shutdown(this->sockfd, modo);
 }
 
 

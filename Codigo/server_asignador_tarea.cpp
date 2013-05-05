@@ -35,6 +35,7 @@ AsignadorTarea::~AsignadorTarea() { }
 // PRE: 'numCliente' es el número de cliente que solocita indicaciones.
 // POST: devuelve un string con el mensaje a devolver al cliente
 std::string AsignadorTarea::darIndicacion() {
+	// Bloqueamos el mutex
 	Lock l(m);
 
 	// Caso en el que se han asignado ya todas las partes
