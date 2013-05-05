@@ -80,8 +80,7 @@ Servidor::~Servidor() {
 void Servidor::run() {
 	// Iniciamos la escucha del servidor
 	this->socket.crear();
-	this->socket.enlazar(this->puerto);
-	this->socket.escuchar(MAX_CONEXIONES);
+	this->socket.escuchar(MAX_CONEXIONES, this->puerto);
 	std::cout << "Servidor escuchando..." << std::endl;
 
 	// Nos ponemos a la espera de clientes que se conecten

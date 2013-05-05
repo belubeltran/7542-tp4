@@ -22,7 +22,7 @@
 
 #include "common_socket.h"
 
-#include <iostream>
+
 
 
 /* ****************************************************************************
@@ -56,45 +56,6 @@ void Socket::crear() {
 }
 
 
-// Enlaza (asocia) al socket con un puerto y una dirección IP.
-// PRE: 'ip' es una cadena que contiene el nombre del host o la dirección
-// IP a la que se desea asociar; 'puerto' es el puerto al que se desea
-// enlazar.
-// POST: lanza una excepción si no se logra llevar a cabo el enlace.
-void Socket::enlazar(std::string ip, int puerto) {
-	// Obtenemos host
-	struct hostent *he = gethostbyname(ip.c_str());
-
-	// Cargamos datos del enlace a realizar
-	this->miDir.sin_family = AF_INET;
-	this->miDir.sin_port = htons(puerto);
-	this->miDir.sin_addr = *((struct in_addr *)he->h_addr);
-	memset(miDir.sin_zero, '\0', sizeof(miDir.sin_zero));
-
-	// Enlazamos
-	if(bind(this->sockfd, (struct sockaddr *)&miDir, sizeof(miDir)) < 0)
-		throw "ERROR: No se pudo llevar a cabo el enlace.";
-}
-
-
-// Enlaza (asocia) al socket con un puerto. La dirección IP es escojida de
-// forma automática tomando la de la máquina sobre la cual se está 
-// ejecutando el proceso.
-// PRE: 'puerto' es el puerto al que se desea enlazar.
-// POST: lanza una excepción si no se logra llevar a cabo el enlace.
-void Socket::enlazar(int puerto) {
-	// Cargamos datos del enlace a realizar
-	this->miDir.sin_family = AF_INET;
-	this->miDir.sin_port = htons(puerto);
-	this->miDir.sin_addr.s_addr = htonl(INADDR_ANY);
-	memset(&(miDir.sin_zero), '\0', sizeof(miDir.sin_zero));
-
-	// Enlazamos
-	if(bind(this->sockfd, (struct sockaddr *)&miDir, sizeof(miDir)) < 0)
-		throw "ERROR: No se pudo llevar a cabo el enlace.";
-}
-
-
 // Conecta el socket a una dirección y puerto destino.
 // PRE: 'hostDestino' es una cadena que contiene el nombre del host o la
 // dirección IP a la que se desea conectar; 'puertoDestino' es el puerto 
@@ -125,7 +86,11 @@ void Socket::conectar(std::string hostDestino, int puertoDestino) {
 // PRE: 'maxConexiones' es el número de conexiones entrantes permitidas en
 // la cola de entrada.
 // POST: lanza una excepción si no se pudo inicializar la escucha.
-void Socket::escuchar(int maxConexiones) {
+void Socket::escuchar(int maxConexiones, int puerto, std::string ip) {
+	// Enlazamos
+	enlazar(puerto, ip);
+
+	// Comenzamos la escucha
 	if(listen(this->sockfd, maxConexiones) == -1)
 		throw "ERROR: No se pudo comenzar a escuchar.";
 }
@@ -223,4 +188,30 @@ int Socket::cerrar(int modo) {
 // defecto. 
 bool Socket::estaActivo() {
 	return this->activo;
+}
+
+
+// Enlaza (asocia) al socket con un puerto y una dirección IP.
+// PRE: 'ip' es una cadena que contiene el nombre del host o la dirección
+// IP a la que se desea asociar; 'puerto' es el puerto al que se desea
+// enlazar.
+// POST: lanza una excepción si no se logra llevar a cabo el enlace.
+void Socket::enlazar(int puerto, std::string ip) {
+	// Cargamos datos del enlace a realizar
+	this->miDir.sin_family = AF_INET;
+	this->miDir.sin_port = htons(puerto);
+
+	// Obtenemos host
+	if(ip == "")
+		this->miDir.sin_addr.s_addr = htonl(INADDR_ANY);
+	else {
+		struct hostent *he = gethostbyname(ip.c_str());
+		this->miDir.sin_addr = *((struct in_addr *)he->h_addr);
+	}
+
+	memset(miDir.sin_zero, '\0', sizeof(miDir.sin_zero));
+
+	// Enlazamos
+	if(bind(this->sockfd, (struct sockaddr *)&miDir, sizeof(miDir)) < 0)
+		throw "ERROR: No se pudo llevar a cabo el enlace.";
 }

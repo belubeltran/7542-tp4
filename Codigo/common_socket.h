@@ -36,6 +36,14 @@ private:
 	// PRE: 'sockfd' es un filedescriptor que identifica a un socket.
 	explicit Socket(const int sockfd);
 
+	// Enlaza (asocia) al socket con un puerto y una dirección IP.
+	// PRE: 'ip' es una cadena que contiene el nombre del host o la dirección
+	// IP a la que se desea asociar; 'puerto' es el puerto al que se desea
+	// enlazar.
+	// POST: devuelve 1 si se logró enlazar satisfactoriamente o -1 en caso de
+	// error
+	void enlazar(int puerto, std::string ip = "");
+
 public:
 
 	// Constructor.
@@ -48,20 +56,6 @@ public:
 	// Crea el socket
 	// POST: lanza una excepción si no se logra llevar a cabo la creación.	
 	void crear();
-
-	// Enlaza (asocia) al socket con un puerto y una dirección IP.
-	// PRE: 'ip' es una cadena que contiene el nombre del host o la dirección
-	// IP a la que se desea asociar; 'puerto' es el puerto al que se desea
-	// enlazar.
-	// POST: lanza una excepción si no se logra llevar a cabo el enlace.
-	void enlazar(std::string host, int puerto);
-
-	// Enlaza (asocia) al socket con un puerto. La dirección IP es escojida de
-	// forma automática tomando la de la máquina sobre la cual se está 
-	// ejecutando el proceso.
-	// PRE: 'puerto' es el puerto al que se desea enlazar.
-	// POST: lanza una excepción si no se logra llevar a cabo el enlace.
-	void enlazar(int puerto);
 
 	// Conecta el socket a una dirección y puerto destino.
 	// PRE: 'hostDestino' es una cadena que contiene el nombre del host o la
@@ -77,7 +71,7 @@ public:
 	// PRE: 'maxConexiones' es el número de conexiones entrantes permitidas en
 	// la cola de entrada.
 	// POST: lanza una excepción si no se pudo inicializar la escucha.
-	void escuchar(int maxConexiones);
+	void escuchar(int maxConexiones, int puerto, std::string ip = "");
 
 	// Espera una conexión en el socket previamente configurado con el método
 	// escuchar().
