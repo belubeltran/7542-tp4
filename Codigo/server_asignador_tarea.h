@@ -51,9 +51,11 @@ public:
 
 	// Genera el mensaje a ser devuelto al cliente con las indicaciones de
 	// la tarea que debe realizar, si es que las hay.
-	// PRE: 'numCliente' es el número de cliente que solocita indicaciones.
-	// POST: devuelve un string con el mensaje a devolver al cliente
-	std::string darIndicacion();
+	// PRE: 'msg_tarea' es una referencia a la variable en donde se depositará
+	// el mensaje de indicación de tarea.
+	// POST: devuelve false si no hay tareas para asignar o true si se asignó
+	// tarea
+	bool darIndicacion(std::string& msg_tarea);
 };
 
 #endif

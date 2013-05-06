@@ -14,7 +14,6 @@
 
 
 int main(int argc, char* argv[]) {
-	
 	// Corroboramos cantidad de argumentos
 	if(argc != 2) {
 		std::cout << "ERROR: cantidad incorrecta de argumentos." << std::endl;

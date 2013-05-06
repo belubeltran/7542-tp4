@@ -11,16 +11,17 @@
 
 
 // Código utilizado por los Draka para encriptar y desencriptar mensajes.
-void CodigoDraka::ed(uint8_t *data, size_t ndata, const uint8_t *key,size_t nkey) {
+void CodigoDraka::ed(uint8_t *data, size_t ndata, const uint8_t *key, 
+	size_t nkey) {
 	uint8_t i = 0, j = 0, s[256];
-	do{ 
+	do { 
 		s[i] = i; 
 	} while (++i);
 
 	do {
 		j += s[i] + key[i % nkey];
 		i - j && (s[i] ^= s[j], s[j] ^= s[i], s[i] ^= s[j]);
-	} while(++i);
+	} while (++i);
 	
 	j = 0;
 	
@@ -38,7 +39,8 @@ void CodigoDraka::ed(uint8_t *data, size_t ndata, const uint8_t *key,size_t nkey
 // tamanio en bytes de 'dato'; 'clave' es la clave a probar.
 // POST: devuelve true si la prueba da como resultado texto ASCII válido o
 // false en su defecto.
-bool CodigoDraka::probarClave(uint8_t *dato, size_t lenDato, const std::string& clave) {
+bool CodigoDraka::probarClave(uint8_t *dato, size_t lenDato, 
+	const std::string& clave) {
 	size_t lenClave = clave.size();
 
 	CodigoDraka::ed(dato, lenDato, (const uint8_t *)(clave.c_str()), lenClave);

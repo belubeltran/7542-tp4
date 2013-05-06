@@ -1,4 +1,4 @@
-//
+//  
 //  server_servidor.h
 //  CLASE SERVIDOR
 //  
@@ -8,11 +8,11 @@
 #define SERVIDOR_H
 
 #include <iostream>
-#include <list>
 #include "common_thread.h"
 #include "common_socket.h"
 #include "server_conexion_cliente.h"
 #include "server_asignador_tarea.h"
+#include "common_lista.h"
 
 
 
@@ -25,7 +25,7 @@
 class Servidor : public Thread {
 private:
 
-	std::list<ConexionCliente*> *clientes;		// Lista de clientes conectados
+	Lista<ConexionCliente*> *clientes;			// Lista de clientes conectados
 	int puerto;									// Puerto en el que se escucha.
 	Socket socket;								// Socket en el que escucha el 
 												// servidor.
@@ -34,9 +34,10 @@ private:
 	int numClientes;							// Número de clientes entre los
 												// que se dividira el trabajo.
 	int cantClientesConectados;					// Número de clientes
-												// conectados
-	std::string msgEncriptado;					// Mensaje encriptado en hexa
-	AsignadorTarea *asignadorTarea;				// Asignador de tareas
+												// conectados.
+	std::string msgEncriptado;					// Mensaje encriptado en hexa.
+	AsignadorTarea *asignadorTarea;				// Asignador de tareas.
+	Lista<std::string> *claves;					// Lista de posibles claves.
 
 public:
 

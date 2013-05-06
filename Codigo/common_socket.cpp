@@ -106,7 +106,7 @@ Socket* Socket::aceptar() {
 	// Corroboramos si no se cerró el socket
 	if(!this->estaActivo()) return 0;
 	// Corroboramos si se produjo un error
-	else if(sCliente < 0)
+	else if (sCliente < 0)
 		throw "ERROR: No se pudo aceptar la conexión";
 
 	return (new Socket(sCliente));
@@ -118,7 +118,7 @@ Socket* Socket::aceptar() {
 // de los datos en bytes.
 // POST: devuelve 0 si se ha realizado el envio correctamente o -1 en caso
 // de error.
-int Socket::enviar(const void* dato, int longDato){
+int Socket::enviar(const void* dato, int longDato) {
 	// Cantidad de bytes que han sido enviados
 	int bytesTotal = 0;
 	// Cantidad de bytes que faltan enviar

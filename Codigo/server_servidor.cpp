@@ -39,9 +39,9 @@ Servidor::Servidor(int puerto, const std::string& archivo,
 	// Almacenamos momentaneamente el mensaje original
 	if (archivoMsg.is_open()) {
 		size = archivoMsg.tellg();
-		msgTemp = new uint8_t [size];
-		archivoMsg.seekg (0, std::ios::beg);
-		archivoMsg.read ((char*)msgTemp, size);
+		msgTemp = new uint8_t[size];
+		archivoMsg.seekg(0, std::ios::beg);
+		archivoMsg.read((char*)msgTemp, size);
 		archivoMsg.close();
 	}
 
@@ -51,7 +51,9 @@ Servidor::Servidor(int puerto, const std::string& archivo,
 	delete[] msgTemp;
 
 	// Creamos la lista de clientes conectados
-	this->clientes = new std::list<ConexionCliente*>;
+	this->clientes = new Lista<ConexionCliente*>;
+	// Creamos la lista de posibles claves
+	this->claves = new Lista<std::string>;
 
 	// Creamos el asignadore de tareas para el servidor
 	this->asignadorTarea = new AsignadorTarea(this->numDigitosClave, 
@@ -61,16 +63,16 @@ Servidor::Servidor(int puerto, const std::string& archivo,
 
 // Destructor
 Servidor::~Servidor() {
-
 	// Liberamos espacio utilizado por cada conexión cliente
-	while(!this->clientes->empty()) {
-		ConexionCliente *cc = clientes->front();
-		clientes->pop_front();
+	while(!this->clientes->estaVacia()) {
+		ConexionCliente *cc = this->clientes->verPrimero();
+		this->clientes->eliminarPrimero();
 		delete cc;
 	}
 
 	// Liberamos espacio utilizado por atributos
 	delete this->clientes;
+	delete this->claves;
 	delete this->asignadorTarea;
 }
 
@@ -85,10 +87,9 @@ void Servidor::run() {
 
 	// Nos ponemos a la espera de clientes que se conecten
 	while(this->isActive()) {
-		
 		Socket *socketCLI = 0;
 		
-		//Aceptamos nuevo cliente
+		// Aceptamos nuevo cliente
 		socketCLI = this->socket.aceptar();
 		
 		// Salimos si el socket no esta activo o si se interrumpió
@@ -97,17 +98,18 @@ void Servidor::run() {
 		
 		// Generamos una nueva conexión para escuchate
 		ConexionCliente *conexionCLI = new ConexionCliente(socketCLI,
-			this->cantClientesConectados, this->asignadorTarea);
+			this->clientes, this->claves, this->asignadorTarea);
 
 		// Censamos al cliente en el servidor
-		this->clientes->push_back(conexionCLI);
+		this->clientes->insertarUltimo(conexionCLI);
 		this->cantClientesConectados++;
 
 		// Damos la orden de que comience a ejecutarse el hilo del cliente.
 		conexionCLI->start();
 
 		// DEBUG CODE
-		std::cout << "Hay " << this->cantClientesConectados << " ahora conectados." << std::endl;
+		std::cout << "Hay " << this->cantClientesConectados << 
+			" ahora conectados." << std::endl;
 		// END DEBUG CODE
 	}
 }

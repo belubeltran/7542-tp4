@@ -58,7 +58,7 @@ void Cliente::run() {
 		// Desconectamos el socket y salimos
 		std::cout << S_NO_JOB_PART << std::endl;
 	}
-	else if(instruccion == S_JOB_PART) {
+	else if (instruccion == S_JOB_PART) {
 		// Variables auxiliares para datos
 		std::string msgEncriptado, numParte;
 		int numDig, claveIni, claveFin;
@@ -70,7 +70,7 @@ void Cliente::run() {
 		procesarClaves(msgEncriptado, numDig, claveIni, claveFin);
 
 		// Avisamos al servidor la finalización del trabajo
-		msg_out = C_JOB_PART_FINISHED + " " + numParte;
+		msg_out = C_JOB_PART_FINISHED + " " + numParte + FIN_MENSAJE;
 		this->socket.enviar(msg_out.c_str(), msg_out.size());
 	}
 	else {
@@ -86,7 +86,7 @@ void Cliente::run() {
 // POST: devuelve un string con el mensaje recibido
 std::string Cliente::recibirMensaje() {
 	// Variables auxiliares
-	char bufout[BUFFER_TAMANIO+1];
+	char bufout[BUFFER_TAMANIO + 1];
 	std::string msg_in;
 	bool estaRecibiendo = true;
 
@@ -104,7 +104,7 @@ std::string Cliente::recibirMensaje() {
 		// Comprobamos si hemos recibido el mensaje completo
 		if(bufout[BUFFER_TAMANIO-1] == FIN_MENSAJE) break;
 		// Si el buffer no se encuentra lleno, buscamos el fin de mensaje
-		else if(!bufout[BUFFER_TAMANIO-1]) {
+		else if (!bufout[BUFFER_TAMANIO-1]) {
 			for(int i = 0; i <= BUFFER_TAMANIO-1; i++) {
 				if(bufout[i] == FIN_MENSAJE) {
 					// Se recibió el marcador de fin de mensaje
@@ -135,7 +135,7 @@ void Cliente::procesarClaves(std::string msgEncriptado, int numDig,
 		// Probamos la clave
 		if (CodigoDraka::probarClave(uintMsgEncriptado, len, clave)) {
 			// Armamos mensaje de acuerdo al protocolo
-			std::string msg_out(C_POSSIBLE_KEY + " " + clave);
+			std::string msg_out(C_POSSIBLE_KEY + " " + clave + FIN_MENSAJE);
 			
 			// Enviamos mensaje de posible clave
 			this->socket.enviar(msg_out.c_str(), msg_out.size());

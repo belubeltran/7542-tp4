@@ -10,7 +10,6 @@
 #define PROTOCOLO_H
 
 
-namespace {
 
 
 /* ****************************************************************************
@@ -18,22 +17,19 @@ namespace {
  * ***************************************************************************/
 
 
-	// Constantes para los identificadores de instrucciones enviadas por el
- 	// cliente
-	const std::string C_GET_JOB_PART = "GET-JOB-PART";
-	const std::string C_POSSIBLE_KEY = "POSSIBLE-KEY";
-	const std::string C_JOB_PART_FINISHED = "JOB-PART-FINISHED";
+// Constantes para los identificadores de instrucciones enviadas por el
+	// cliente
+const std::string C_GET_JOB_PART = "GET-JOB-PART";
+const std::string C_POSSIBLE_KEY = "POSSIBLE-KEY";
+const std::string C_JOB_PART_FINISHED = "JOB-PART-FINISHED";
 
-	// Constantes para los identificadores de instrucciones enviadas por el
- 	// servidor
-	const std::string S_JOB_PART = "JOB-PART";
-	const std::string S_NO_JOB_PART = "NO-JOB-PART";
+// Constantes para los identificadores de instrucciones enviadas por el
+	// servidor
+const std::string S_JOB_PART = "JOB-PART";
+const std::string S_NO_JOB_PART = "NO-JOB-PART";
 
-	// Constante para caracter de fin de instrucción
-	const char FIN_MENSAJE = '\n';
-	
-
-}
+// Constante para caracter de fin de instrucción
+const char FIN_MENSAJE = '\n';
 
 
 #endif

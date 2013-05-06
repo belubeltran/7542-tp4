@@ -24,7 +24,7 @@ private:
 public:
 
 	// Constructor
-	Terminal(Servidor *servidor);
+	explicit Terminal(Servidor *servidor);
 
 	// Define tareas a ejecutar en el hilo.
 	// Mantiene a la escucha al servidor y acepta nuevos clients.

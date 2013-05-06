@@ -1,6 +1,6 @@
 //
-//  server_servidor.cpp
-//  CLASE SERVIDOR
+//  server_asignador_tarea.cpp
+//  CLASE ASIGNADORTAREA
 //  
 //  
 //  
@@ -10,6 +10,7 @@
 #include <iomanip>
 #include <math.h>
 #include "server_asignador_tarea.h"
+#include "common_protocolo.h"
 #include "common_convertir.h"
 #include "common_lock.h"
 
@@ -30,17 +31,22 @@ AsignadorTarea::AsignadorTarea(int& numDigitosClave, int& numClientes,
 AsignadorTarea::~AsignadorTarea() { }
 
 
+
 // Genera el mensaje a ser devuelto al cliente con las indicaciones de
 // la tarea que debe realizar, si es que las hay.
-// PRE: 'numCliente' es el número de cliente que solocita indicaciones.
-// POST: devuelve un string con el mensaje a devolver al cliente
-std::string AsignadorTarea::darIndicacion() {
+// PRE: 'msg_tarea' es una referencia a la variable en donde se depositará
+// el mensaje de indicación de tarea.
+// POST: devuelve false si no hay tareas para asignar o true si se asignó
+// tarea
+bool AsignadorTarea::darIndicacion(std::string& msg_tarea) {
 	// Bloqueamos el mutex
 	Lock l(m);
 
 	// Caso en el que se han asignado ya todas las partes
-	if(this->numPartes == this->numClientes - 1)
-		return std::string("NO-JOB-PART\n");
+	if(this->numPartes == this->numClientes - 1) {
+		msg_tarea = S_NO_JOB_PART + FIN_MENSAJE;
+		return false;
+	};
 
 	// Calculamos rango de claves
 	std::string claveIni = claveInicialDeRangoDeClaves();
@@ -48,14 +54,15 @@ std::string AsignadorTarea::darIndicacion() {
 	std::string ind("");
 	
 	// Generamos el mensaje
-	ind += "JOB-PART " + this->msgEncriptado + " " + 
+	ind += S_JOB_PART + " " + this->msgEncriptado + " " + 
 		Convertir::itos(this->numPartes) + " " + 
 		Convertir::itos(this->numDigitosClave) + " " + claveIni + " " +
-		claveFin + "\n";
+		claveFin + FIN_MENSAJE;
 
 	this->numPartes++;
+	msg_tarea = ind;
 
-	return ind;
+	return true;
 }
 
 
@@ -89,7 +96,7 @@ std::string AsignadorTarea::claveFinalDeRangoDeClaves() {
 		
 		return cotaSup.str();
 	} 
-	else if(this->numPartes == this->numClientes - 1) {
+	else if (this->numPartes == this->numClientes - 1) {
 		int num = pow(10, this->numDigitosClave) - 1;
 
 		cotaSup << std::setw(this->numDigitosClave) << std::setfill('0') 
