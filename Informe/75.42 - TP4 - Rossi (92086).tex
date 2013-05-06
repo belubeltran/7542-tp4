@@ -135,6 +135,8 @@
 	\item En los comandos ingresados a través de la terminal del servidor, se considera que el caractér de fin de línea, ``\textit{$\backslash$n}'', equivale a presionar enter una vez tipeado el comando deseado;
 
 	\item En el envío y en la recepción de datos se considera como fin de mensaje al caractér ``\textit{$\backslash$n}'' establecido por el protocolo.
+
+	\item Al provocar la salida forzada del lado del servidor mediante el ingreso de ``q$\backslash$n'' por entrada estándar, previo a la finalización se enviará a la salida estándar el estado del servidor en el momento en que se invocó su cierre.
 \end{itemize}
 \medskip
 

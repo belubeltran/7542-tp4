@@ -35,14 +35,19 @@ int main(int argc, char* argv[]) {
 	getline(argumento, sPuerto, ':');
 	puerto = Convertir::stoi(sPuerto);
 
-	// Creamos el cliente
-	Cliente *cliente = new Cliente(nombreHost, puerto);
+	try {
+		// Creamos el cliente
+		Cliente *cliente = new Cliente(nombreHost, puerto);
 
-	// Iniciamos su ejecución
-	cliente->start();
-	cliente->join();
+		// Iniciamos su ejecución
+		cliente->start();
+		cliente->join();
 
-	delete cliente;
-
+		delete cliente;
+	}
+	catch (const char* e) {
+		std::cout << e << std::endl;
+	}
+	
 	return 0;
 }

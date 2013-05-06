@@ -25,11 +25,10 @@ int main(int argc, char* argv[]) {
 	Terminal *terminal = new Terminal(servidor);
 
 	// Iniciamos su ejecución
-	servidor->start();
 	terminal->start();
-	
-	terminal->join();
+	servidor->iniciar();
 	servidor->join();
+	terminal->cancel();
 
 	// delete servidor;
 	delete terminal;

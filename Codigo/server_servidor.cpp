@@ -26,9 +26,7 @@ namespace {
 
 // Constructor
 Servidor::Servidor(int puerto, const std::string& archivo, 
-	int numDigitosClave, int numClientes) : puerto(puerto), 
-	numDigitosClave(numDigitosClave), numClientes(numClientes),
-	cantClientesConectados(0) {
+	int numDigitosClave, int numClientes) : puerto(puerto) {
 	// Abrimos el archivo con el mensaje encriptado
 	std::ifstream archivoMsg(archivo.c_str(), 
 		std::ios::in | std::ios::binary | std::ios::ate);
@@ -45,19 +43,19 @@ Servidor::Servidor(int puerto, const std::string& archivo,
 		archivoMsg.close();
 	}
 
-	// Convertimos el mensaje encriptado a hexadecimal y lo guardamos
-	this->msgEncriptado = Convertir::uitoh(msgTemp, size);
-
+	// Convertimos el mensaje encriptado a hexadecimal
+	std::string msg_hex(Convertir::uitoh(msgTemp, size));
 	delete[] msgTemp;
-
+	
 	// Creamos la lista de clientes conectados
 	this->clientes = new Lista<ConexionCliente*>;
+
 	// Creamos la lista de posibles claves
 	this->claves = new Lista<std::string>;
 
-	// Creamos el asignadore de tareas para el servidor
-	this->asignadorTarea = new AsignadorTarea(this->numDigitosClave, 
-		this->numClientes, this->msgEncriptado);
+	// Creamos el controlador de tareas para el servidor
+	this->controlador = new ControladorDeTareas(numDigitosClave, 
+		numClientes, msg_hex, this->claves);
 }
 
 
@@ -73,12 +71,12 @@ Servidor::~Servidor() {
 	// Liberamos espacio utilizado por atributos
 	delete this->clientes;
 	delete this->claves;
-	delete this->asignadorTarea;
+	delete this->controlador;
 }
 
 
 // Define tareas a ejecutar en el hilo.
-// Mantiene a la escucha al servidor y acepta nuevos clients.
+// Mantiene a la escucha al servidor y acepta nuevos clientes.
 void Servidor::run() {
 	// Iniciamos la escucha del servidor
 	this->socket.crear();
@@ -98,19 +96,13 @@ void Servidor::run() {
 		
 		// Generamos una nueva conexión para escuchate
 		ConexionCliente *conexionCLI = new ConexionCliente(socketCLI,
-			this->clientes, this->claves, this->asignadorTarea);
+			this->controlador);
 
 		// Censamos al cliente en el servidor
 		this->clientes->insertarUltimo(conexionCLI);
-		this->cantClientesConectados++;
 
 		// Damos la orden de que comience a ejecutarse el hilo del cliente.
 		conexionCLI->start();
-
-		// DEBUG CODE
-		std::cout << "Hay " << this->cantClientesConectados << 
-			" ahora conectados." << std::endl;
-		// END DEBUG CODE
 	}
 }
 
@@ -119,6 +111,43 @@ void Servidor::run() {
 void Servidor::detener() {
 	this->stop();
 
+	// Detenemos tareas en curso
+	this->controlador->detenerTareas();
+
+	// Imprimimos situación del servidor al momento de detener la ejecución
+	this->imprimirSituacion();
+	
 	// Forzamos el cierre del socket
 	this->socket.cerrar();
+}
+
+
+void Servidor::iniciar() {
+	this->start();
+	std::cout << "INICIO" << std::endl;
+	this->controlador->esperarTerminarTareas();
+	std::cout << "CONCLUYERON TAREAS" << std::endl;
+	this->detener();
+	std::cout << "TERMINO" << std::endl;
+}
+
+
+// Envía a la salida estándar la situación en la que se encuentra al
+// momento de ser invocada.
+void Servidor::imprimirSituacion() {
+	// Caso en que no se completaron las tareas
+	if(!this->controlador->seCompletaronTareas())
+		std::cout << "Not finished" << std::endl;
+	// Caso en que se completaron las tareas
+	else {
+		// No se encontraron claves
+		if(this->claves->tamanio() == 0)
+			std::cout << "No keys found" << std::endl;
+		// Se encontró una única clave
+		else if (this->claves->tamanio() == 1)
+			std::cout << this->claves->verPrimero() << std::endl;
+		// Se encontraron múltiples claves
+		else
+			std::cout << "Multiple keys found" << std::endl;
+	}
 }

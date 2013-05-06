@@ -27,15 +27,22 @@ Thread::Thread(const Thread &c) { }
 Thread::~Thread() { }
 
 
-// Inicia el thread
+// Inicia el hilo
 void Thread::start() {
 	pthread_create(&this->thread, 0, callback, this);
 }
 
 
-// Detiene el thread
+// Detiene el hilo
 void Thread::stop() {
 	this->status = false;
+}
+
+
+// Envía una solicitud de cancelación al hilo, deteniendo abruptamente
+// su ejecución
+void Thread::cancel() {
+	pthread_cancel(this->thread);
 }
 
 
