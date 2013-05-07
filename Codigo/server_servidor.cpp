@@ -103,19 +103,17 @@ void Servidor::run() {
 // Inicia la ejecución del servidor. No debe utilizarse el método start()
 // para iniciar. En caso de error lanza una excepción.
 void Servidor::iniciar() {
-	Lock l(this->m);
-
 	// Iniciamos hilo de ejecución
 	this->start();
-
-	l.signal();
 }
 
 
 // Espera hasta que se termine de ejecutar el servidor de forna natural.
-void Servidor::esperar() {
+// POST: devuelve true al terminar.
+bool Servidor::esperar() {
 	// Bloquea hasta que se terminen las tareas
 	this->controlador->esperarTerminarTareas();
+	return true;
 }
 
 

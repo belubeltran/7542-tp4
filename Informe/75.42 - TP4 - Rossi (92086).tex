@@ -132,11 +132,9 @@
 
 	\item El servidor almacenará todas las posibles claves, para una vez finalizada la actividad de todos los clientes, determinar si existe una ambig\"uedad o si es única la clave;
 
-	\item En los comandos ingresados a través de la terminal del servidor, se considera que el caractér de fin de línea, ``\textit{$\backslash$n}'', equivale a presionar enter una vez tipeado el comando deseado;
-
 	\item En el envío y en la recepción de datos se considera como fin de mensaje al caractér ``\textit{$\backslash$n}'' establecido por el protocolo.
 
-	\item Al provocar la salida forzada del lado del servidor mediante el ingreso de ``q$\backslash$n'' por entrada estándar, previo a la finalización se enviará a la salida estándar el estado del servidor en el momento en que se invocó su cierre. Es muy probable que al ser forzada la salida, el estado a mostrar sea \textit{Not finished}, ya que de otra manera, el servidor habría finalizado automaticamente su ejecución.
+	\item El programa del lado servidor no finalizará su ejecución hasta cuando y en tanto no se haya introducido ``\textit{q$\backslash$n}'' por la entrada estándar.
 \end{itemize}
 \medskip
 
@@ -146,9 +144,9 @@
 % DISEÑO
 \section{Diseño}
 
-	Como creemos que la escalabilidad de un sistema (en este caso del programa) es muy importante, es que se ha decidido modularizar consistentemente ciertas partes que conforman las especificaciones, de manera de permitirnos, en un futuro, agregar o mejorar más fácilmente el funcionamiento del mismo. Para lograr este propósito se hará uso, entre otras cosas, de TDAs y estructuras.
+	Como se mencionó anteriormente, se optará por una solución distribuida siguiendo un esquema cliente-servidor. De esta manera, poseeremos dos implementaciones independientes una de la otra, pero que trabajaran en conjunto una vez establecida la conexión entre las mismas. Por lo tanto, vamos a tener un programa \textit{servidor} y otro programa \textit{cliente}.
 	\par
-	En los apartados que siguen pondremos la atención en aquellos aspectos de la implementación que pueden ser relevantes a causa de su complejidad o particularidad. En estos se describen los inconvenientes que presentan y la forma en que fueron resueltos.
+	En los apartados que siguen pondremos la atención en aquellos aspectos de la implementación de ambos programas que pueden ser relevantes a causa de su complejidad o particularidad. En estos se describen los inconvenientes que presentan y la forma en que fueron resueltos.
 \bigskip
 
 

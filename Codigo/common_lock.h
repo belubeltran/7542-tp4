@@ -36,6 +36,12 @@ public:
 	// Destructor
 	~Lock();
 
+	// Bloquea el mutex;
+	void lock();
+
+	// Desbloquea el mutex;
+	void unlock();
+
 	// Bloquea la ejecución en un una condition variable hasta que se produzca
 	// una señalización.
 	void wait();

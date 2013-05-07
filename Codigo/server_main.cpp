@@ -47,10 +47,17 @@
 #include <iostream>
 #include <fstream>
 #include <stdlib.h>
-#include "server_servidor.h"
-#include "server_terminal.h"
 #include "common_convertir.h"
+#include "common_mutex.h"
+#include "common_lock.h"
+#include "server_servidor.h"
 
+
+
+namespace {
+	// Constantes que definen los comandos válidos
+	const std::string CMD_SALIR = "q";
+}
 
 
 
@@ -90,7 +97,6 @@ std::string abrirArchivoEncriptado(const std::string& archivo) {
 
 
 
-
 /* ****************************************************************************
  * PROGRAMA PRINCIPAL
  * ***************************************************************************/
@@ -118,7 +124,7 @@ int main(int argc, char* argv[]) {
 	Servidor *servidor = new Servidor(atoi(argv[1]), msg, atoi(argv[3]), 
 		atoi(argv[4]));
 
-	Terminal *terminal = new Terminal(servidor);
+	// Terminal *terminal = new Terminal(servidor);
 
 	try {
 		// Iniciamos servidor
@@ -127,28 +133,27 @@ int main(int argc, char* argv[]) {
 	catch(char const * e) {
 		std::cerr << e << std::endl;
 
-		delete terminal;
+		// delete terminal;
 		delete servidor;
 
 		return 1;
 	}
 
-	// Iniciamos terminal de comandos
-	terminal->start();
 
-	// Esperamos a que el servidor concluya su actividad
-	servidor->esperar();
+	std::string comando;
+	
+	// Esperamos a que se indique la finalización de la ejecución
+	while(comando != CMD_SALIR)
+		getline(std::cin, comando);
+
+
 	servidor->detener();
-
-	// Detenido el servidor interrumpimos la ejecución del terminal
-	terminal->cancel();
-	terminal->join();
 	servidor->join();
 
 	// Imprimimos situación del servidor luego de la ejecución del mismo
 	servidor->imprimirSituacion();
 
-	delete terminal;
+	// delete terminal;
 	delete servidor;
 
 	return 0;

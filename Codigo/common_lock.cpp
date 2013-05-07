@@ -32,6 +32,18 @@ Lock::~Lock() {
 }
 
 
+// Bloquea el mutex;
+void Lock::lock() {
+	this->mutex.lock();
+}
+
+
+// Desbloquea el mutex;
+void Lock::unlock() {
+	this->mutex.unlock();
+}
+
+
 // Bloquea la ejecución en un una condition variable hasta que se produzca
 // una señalización.
 void Lock::wait() {

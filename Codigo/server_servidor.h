@@ -9,7 +9,6 @@
 
 
 #include "common_thread.h"
-#include "common_mutex.h"
 #include "common_socket.h"
 #include "common_lista.h"
 #include "server_conexion_cliente.h"
@@ -32,7 +31,6 @@ private:
 												// servidor.
 	ControladorDeTareas *controlador;			// Controlador de tareas.
 	Lista<std::string> *claves;					// Lista de posibles claves.
-	Mutex m;								// Mutex
 
 public:
 
@@ -51,8 +49,9 @@ public:
 	// para iniciar. En caso de error lanza una excepción.
 	void iniciar();
 
-	// Espera hasta que se termine de ejecutar el servidor de forma natural.
-	void esperar();
+	// Espera hasta que se termine de ejecutar el servidor de forna natural.
+	// POST: devuelve true al terminar.
+	bool esperar();
 
 	// Detiene la ejecución del servidor. No debe utilizarse el método stop()
 	// para detener.
