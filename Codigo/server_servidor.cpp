@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include "server_servidor.h"
+#include "common_lock.h"
 
 
 
@@ -102,8 +103,12 @@ void Servidor::run() {
 // Inicia la ejecución del servidor. No debe utilizarse el método start()
 // para iniciar. En caso de error lanza una excepción.
 void Servidor::iniciar() {
+	Lock l(this->m);
+
 	// Iniciamos hilo de ejecución
 	this->start();
+
+	l.signal();
 }
 
 
@@ -130,9 +135,6 @@ void Servidor::detener() {
 	// Ante una eventual detención abrupta, posterior a la inicialización del
 	// socket, lanzará un error que daremos por obviado.
 	catch(...) { }
-
-	// Esperamos a que el thread finalice su ejecución
-	this->join();
 }
 
 

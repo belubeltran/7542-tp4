@@ -8,6 +8,7 @@
 // 
 
 
+#include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -42,7 +43,10 @@ Socket::Socket(const int sockfd) : sockfd(sockfd), activo(true) { }
 
 // Destructor. 
 // Cierra el socket.
-Socket::~Socket() { }
+Socket::~Socket() { 
+	if(close(this->sockfd) == -1)
+		std::cerr << "ERROR: No se ha podido cerrar el socket." << std::endl;
+}
 
 
 // Crea el socket
@@ -158,7 +162,7 @@ int Socket::recibir(void* buffer, int longBuffer) {
 
 
 // Cierra el socket. Brinda distintos tipos de formas de cerrar permitiendo
-// realizar un cierre del envío y recepción de datos en forma ordenada.
+// realizar un cierre del envío y recepción de datos en forma controlada.
 // PRE: si 'modo' es 0, no se permite recibir más datos; si es 1, no se 
 // permite enviar más datos; si es 2, no se permite enviar ni recibir más
 // datos, quedando inutilizable el socket. Si no se especifica ningún modo 
@@ -166,7 +170,12 @@ int Socket::recibir(void* buffer, int longBuffer) {
 // POST: el socket quedará parcial o completamente inutilizable 
 // dependiendo del modo elegido.
 int Socket::cerrar(int modo) {
-	if(modo == 2) this->activo = false;
+	if(modo == 2) {
+		this->activo = false;
+		// close(this->sockfd);
+		// return 0;
+	} 
+		
 	return shutdown(this->sockfd, modo);
 }
 
@@ -187,6 +196,13 @@ bool Socket::estaActivo() {
 // enlazar.
 // POST: lanza una excepción si no se logra llevar a cabo el enlace.
 void Socket::enlazar(int puerto, std::string ip) {
+	int yes = 1;
+	
+	// Reutilizamos socket
+	if(setsockopt(this->sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) 
+		== -1)
+		throw "ERROR: Antes de enlazar, no se pudo reutilizar socket.";
+
 	// Cargamos datos del enlace a realizar
 	this->miDir.sin_family = AF_INET;
 	this->miDir.sin_port = htons(puerto);

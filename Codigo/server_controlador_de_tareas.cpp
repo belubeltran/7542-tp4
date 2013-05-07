@@ -44,7 +44,7 @@ bool ControladorDeTareas::obtenerIndicacion(std::string& msg_tarea) {
 
 	// Caso en el que se han asignado ya todas las partes
 	if(asignacionCompleta) {
-		msg_tarea = S_NO_JOB_PART + FIN_MENSAJE;
+		msg_tarea = S_NO_JOB_PART;
 		return false;
 	};
 

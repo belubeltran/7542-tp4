@@ -143,6 +143,7 @@ int main(int argc, char* argv[]) {
 	// Detenido el servidor interrumpimos la ejecución del terminal
 	terminal->cancel();
 	terminal->join();
+	servidor->join();
 
 	// Imprimimos situación del servidor luego de la ejecución del mismo
 	servidor->imprimirSituacion();
