@@ -2,8 +2,6 @@
 //  client_cliente.h
 //  CLASE CLIENTE
 //  
-//  
-//  
 
 
 #ifndef CLIENTE_H

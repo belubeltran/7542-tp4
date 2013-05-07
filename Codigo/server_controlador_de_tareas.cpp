@@ -25,8 +25,7 @@ ControladorDeTareas::ControladorDeTareas(int numDigitosClave, int numClientes,
 		std::string msgEncriptado, Lista<std::string> *claves) : 
 		numDigitosClave(numDigitosClave), numClientes(numClientes), 
 		msgEncriptado(msgEncriptado), claves(claves), numPartes(0), 
-		asignacionCompleta(false), cantAsignacionesHechas(0), 
-		clientesCorriendo(0) { }
+		asignacionCompleta(false), clientesCorriendo(0) { }
 
 
 // Destructor

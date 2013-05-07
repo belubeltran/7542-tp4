@@ -40,7 +40,7 @@ void Cliente::run() {
 		// Conectamos el socket
 		this->socket.conectar(nombreHost, puerto);
 	}
-	catch (char const * e) {
+	catch(char const * e) {
 		std::cerr << e << std::endl;
 		return;
 	}
@@ -49,7 +49,7 @@ void Cliente::run() {
 	Comunicador comunicador(&this->socket);
 	
 	// Enviamos petición de parte de trabajo
-	comunicador.emitir(C_GET_JOB_PART, "");
+	if(comunicador.emitir(C_GET_JOB_PART, "") == -1) return;
 
 	// Variables de procesamiento
 	std::string instruccion;

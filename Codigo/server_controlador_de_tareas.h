@@ -32,8 +32,6 @@ private:
 	int numPartes;							// Cantidad de partes asignadas
 	bool asignacionCompleta;				// Flag que contiene info sobre
 											// si se asigno todo el trabajo
-	int cantAsignacionesHechas;				// Número de asignaciones
-											// realizadas
 	int clientesCorriendo;					// Contador de los clientes que
 											// se encuentran procesando
 

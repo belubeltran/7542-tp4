@@ -2,7 +2,6 @@
 //  client_main.cpp
 //  Programa principal del CLIENTE
 //  
-//  
 
 
 #include <iostream>
@@ -11,6 +10,12 @@
 #include "client_cliente.h"
 #include "common_convertir.h"
 
+
+
+
+/* ****************************************************************************
+ * PROGRAMA PRINCIPAL
+ * ***************************************************************************/
 
 
 int main(int argc, char* argv[]) {

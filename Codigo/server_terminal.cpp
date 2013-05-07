@@ -1,8 +1,6 @@
 //
-//  server_servidor.cpp
-//  CLASE SERVIDOR
-//  
-//  
+//  server_terminal.cpp
+//  CLASE TERMINAL
 //  
 
 

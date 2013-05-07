@@ -17,6 +17,7 @@
 
 
 
+
 /* ****************************************************************************
  * DECLARACIÓN DE LA CLASE
  * ***************************************************************************/
@@ -32,7 +33,7 @@ public:
 	// Constructor
 	// PRE: 'socket' es un socket por el que se desea hacer el envío y
 	// transmisión de mensajes
-	Comunicador(Socket *socket);
+	explicit Comunicador(Socket *socket);
 
 	// Emite una instrucción.
 	// PRE: 'instruccion' es una cadena que identifica la instrucción a emitir;

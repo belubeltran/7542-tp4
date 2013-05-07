@@ -35,7 +35,7 @@ private:
 public:
 
 	// Constructor
-	Servidor(int puerto, const  std::string& archivo, int numDigitosClave, 
+	Servidor(int puerto, std::string& msg, int numDigitosClave, 
 		int numClientes);
 
 	// Destructor
@@ -46,7 +46,7 @@ public:
 	virtual void run();
 
 	// Inicia la ejecución del servidor. No debe utilizarse el método start()
-	// para iniciar.
+	// para iniciar. En caso de error lanza una excepción.
 	void iniciar();
 
 	// Espera hasta que se termine de ejecutar el servidor de forna natural.

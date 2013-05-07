@@ -5,8 +5,6 @@
 
 
 #include <iostream>
-#include <fstream>
-#include "common_convertir.h"
 #include "server_servidor.h"
 
 
@@ -24,28 +22,8 @@ namespace {
 
 
 // Constructor
-Servidor::Servidor(int puerto, const std::string& archivo, 
+Servidor::Servidor(int puerto, std::string& msg, 
 	int numDigitosClave, int numClientes) : puerto(puerto) {
-	// Abrimos el archivo con el mensaje encriptado
-	std::ifstream archivoMsg(archivo.c_str(), 
-		std::ios::in | std::ios::binary | std::ios::ate);
-
-	std::ifstream::pos_type size;
-	uint8_t * msgTemp;
-
-	// Almacenamos momentaneamente el mensaje original
-	if (archivoMsg.is_open()) {
-		size = archivoMsg.tellg();
-		msgTemp = new uint8_t[size];
-		archivoMsg.seekg(0, std::ios::beg);
-		archivoMsg.read((char*)msgTemp, size);
-		archivoMsg.close();
-	}
-
-	// Convertimos el mensaje encriptado a hexadecimal
-	std::string msg_hex(Convertir::uitoh(msgTemp, size));
-	delete[] msgTemp;
-	
 	// Creamos la lista de clientes conectados
 	this->clientes = new Lista<ConexionCliente*>;
 
@@ -54,7 +32,7 @@ Servidor::Servidor(int puerto, const std::string& archivo,
 
 	// Creamos el controlador de tareas para el servidor
 	this->controlador = new ControladorDeTareas(numDigitosClave, 
-		numClientes, msg_hex, this->claves);
+		numClientes, msg, this->claves);
 }
 
 
@@ -122,8 +100,9 @@ void Servidor::run() {
 
 
 // Inicia la ejecución del servidor. No debe utilizarse el método start()
-// para iniciar. 
+// para iniciar. En caso de error lanza una excepción.
 void Servidor::iniciar() {
+	// Iniciamos hilo de ejecución
 	this->start();
 }
 
@@ -150,7 +129,7 @@ void Servidor::detener() {
 	}
 	// Ante una eventual detención abrupta, posterior a la inicialización del
 	// socket, lanzará un error que daremos por obviado.
-	catch (...) { }
+	catch(...) { }
 
 	// Esperamos a que el thread finalice su ejecución
 	this->join();

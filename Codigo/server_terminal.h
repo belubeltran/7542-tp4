@@ -1,9 +1,7 @@
 //
 //  server_terminal.h
 //  CLASE TERMINAL
-//  
-//  
-//  
+//   
 
 
 #ifndef TERMINAL_H
