@@ -1,7 +1,41 @@
-//
-//  client_main.cpp
+//  
+//  EL CÓDIGO DRAKA
 //  Programa principal del CLIENTE
 //  
+//  ***************************************************************************
+//  
+//  Facultad de Ingeniería - UBA
+//  75.42 Taller de Programación I
+//  Trabajo Práctico N°4
+//  
+//  ALUMNO: Federico Martín Rossi
+//  PADRÓN: 92086
+//  EMAIL:  federicomrossi@gmail.com
+//  
+//  ***************************************************************************
+//
+//  Programa cliente que permite conectarse a un servidor para recibir un 
+//  mensaje encriptado, en hexadecimal, junto con un rango de claves que 
+//  deberán ser probadas por fuerza bruta de manera de poder recuperar el 
+//  texto. El cliente notificará al servidor de aquellas claves que resultan
+//  correctas al ser probadas.
+//  
+//  
+//  FORMA DE USO
+//  ============
+//
+//  Deberá ejecutarse el programa en la línea de comandos de la siguiente 
+//  manera:
+//  
+//  	# ./client [NOMBRE-HOST] [PUERTO]
+//
+//  donde,
+//
+//  	NOMBRE-HOST: es el nombre del host donde está el servidor;
+//  	PUERTO: es el puerto donde el servidor está escuchando
+//
+//  
+
 
 
 #include <iostream>

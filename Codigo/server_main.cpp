@@ -1,7 +1,47 @@
-//
-//  server_main.cpp
-//  Programa principal del SERVER
 //  
+//  EL CÓDIGO DRAKA
+//  Programa principal del SERVIDOR
+//  
+//  ***************************************************************************
+//  
+//  Facultad de Ingeniería - UBA
+//  75.42 Taller de Programación I
+//  Trabajo Práctico N°4
+//  
+//  ALUMNO: Federico Martín Rossi
+//  PADRÓN: 92086
+//  EMAIL:  federicomrossi@gmail.com
+//  
+//  ***************************************************************************
+//
+//  Programa servidor el cual se encarga de estar a la escucha de conexiones
+//  entrantes por parte de clientes, y de fraccionar el trabajo a enviarles a
+//  estos a medida que se van conectando. El trabajo se reparte entre un número
+//  fijo de clientes especificado al iniciar el programa, provocando que, una
+//  vez repartidas todas las partes, los demás clientes sean notificados de la 
+//  inexistencia de parte de trabajo a asignarles.
+//  
+//  
+//  
+//  FORMA DE USO
+//  ============
+//
+//  Deberá ejecutarse el programa en la línea de comandos de la siguiente 
+//  manera:
+//  
+//  	# ./server [PUERTO] [ARCHIVO] [NUM-DIGITOS-CLAVE] [NUM-CLIENTES]
+//
+//  donde,
+//
+//  	PUERTO: es el servidor donde deberá escuchar el servidor;
+//  	ARCHIVO: es la ruta al archivo binario conteniendo los datos
+//  			 encriptados;
+//  	NUM-DIGITOS-CLAVE: es el npumero de dígitos de la clave
+//  	NUM-CLIENTES: es el número de clientes entre los que se dividirá el
+//  	trabajo
+//
+//  
+
 
 
 #include <iostream>
