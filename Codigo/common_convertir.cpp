@@ -6,9 +6,16 @@
 //  
 
 
-#include "common_convertir.h"
+#include <iomanip>
 #include <sstream>
+#include "common_convertir.h"
 
+
+
+
+/* ****************************************************************************
+ * DEFINICIÓN DE LA CLASE
+ * ***************************************************************************/
 
 
 // Devuelve el equivalente entero de un caracter hexadecimal
@@ -43,9 +50,9 @@ uint8_t* Convertir::htoui(std::string& s) {
 
 	for(unsigned int i = 0; i < s.size(); i += 2) {
 		uint8_t pri = Convertir::htoi(s[i]);
-		uint8_t sec = Convertir::htoi(s[i+1]);
+		uint8_t seg = Convertir::htoi(s[i+1]);
 
-		a[j] = pri * 16 + sec;
+		a[j] = pri * 16 + seg;
 		j++;
 	}
 

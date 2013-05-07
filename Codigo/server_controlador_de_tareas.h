@@ -22,20 +22,20 @@
 class ControladorDeTareas {
 private:
 
-	int numDigitosClave;						// Número de dígitos de la
-												// clave.
-	int numClientes;							// Número de clientes entre los
-												// que se dividirá el trabajo.
-	std::string msgEncriptado;					// Referencia al mensaje
-	Lista<std::string> *claves;					// Lista de posibles claves.
-	Mutex m;									// Mutex
-	int numPartes;								// Cantidad de partes asignadas
-	bool asignacionCompleta;					// Flag que contiene info sobre
-												// si se asigno todo el trabajo
-	int cantAsignacionesHechas;					// Número de asignaciones
-												// realizadas
-	int clientesCorriendo;						// Contador de los clientes que
-												// se encuentran procesando
+	int numDigitosClave;					// Número de dígitos de la
+											// clave.
+	int numClientes;						// Número de clientes entre los
+											// que se dividirá el trabajo.
+	std::string msgEncriptado;				// Referencia al mensaje
+	Lista<std::string> *claves;				// Lista de posibles claves.
+	Mutex m;								// Mutex
+	int numPartes;							// Cantidad de partes asignadas
+	bool asignacionCompleta;				// Flag que contiene info sobre
+											// si se asigno todo el trabajo
+	int cantAsignacionesHechas;				// Número de asignaciones
+											// realizadas
+	int clientesCorriendo;					// Contador de los clientes que
+											// se encuentran procesando
 
 	// Devuelve la clave inicial del espacio de claves a asignar a un cliente.
 	// PRE: 'numCliente' es el número de cliente que le ha sido asignado.
@@ -46,7 +46,6 @@ private:
 	// PRE: 'numCliente' es el número de cliente que le ha sido asignado.
 	// POST: se devuelve una cadena con la clave final.
 	std::string claveFinalDeRangoDeClaves();
-
 
 public:
 

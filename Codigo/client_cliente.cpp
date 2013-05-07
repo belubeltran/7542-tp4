@@ -6,10 +6,10 @@
 
 #include <iostream>
 #include <sstream>
-#include "client_cliente.h"
 #include "common_convertir.h"
 #include "common_codigo_draka.h"
 #include "common_comunicador.h"
+#include "client_cliente.h"
 
 
 
@@ -25,7 +25,9 @@ Cliente::Cliente(std::string nombreHost, int puerto) :
 
 
 // Destructor
-Cliente::~Cliente() { }
+Cliente::~Cliente() {
+	this->socket.cerrar();	
+}
 
 
 // Define tareas a ejecutar en el hilo.
@@ -33,8 +35,16 @@ Cliente::~Cliente() { }
 void Cliente::run() {
 	// Creamos socket
 	this->socket.crear();
-	this->socket.conectar(nombreHost, puerto);
 
+	try {
+		// Conectamos el socket
+		this->socket.conectar(nombreHost, puerto);
+	}
+	catch (char const * e) {
+		std::cerr << e << std::endl;
+		return;
+	}
+	
 	// Creamos el comunicador para enviar y recibir mensajes
 	Comunicador comunicador(&this->socket);
 	
@@ -46,7 +56,7 @@ void Cliente::run() {
 	std::string args;
 
 	// Recibimos respuesta del servidor
-	comunicador.recibir(instruccion, args);
+	if(comunicador.recibir(instruccion, args) == -1) return;
 
 	// Caso en que no hay trabajo para realizar
 	if(instruccion == S_NO_JOB_PART) {
@@ -68,10 +78,10 @@ void Cliente::run() {
 		procesarClaves(msgEncriptado, numDig, claveIni, claveFin);
 
 		// Avisamos al servidor la finalización del trabajo
-		comunicador.emitir(C_JOB_PART_FINISHED, numParte);
+		if(comunicador.emitir(C_JOB_PART_FINISHED, numParte) == -1) return;
 	}
 	else
-		std::cout << "Mensaje inválido del servidor" << std::endl;
+		std::cerr << "Mensaje inválido del servidor" << std::endl;
 
 	// Desconectamos el socket
 	this->socket.cerrar();
@@ -97,6 +107,8 @@ void Cliente::procesarClaves(std::string msgEncriptado, int numDig,
 		// Probamos la clave
 		if (CodigoDraka::probarClave(uintMsgEncriptado, len, clave))
 			// Enviamos mensaje de posible clave si da positiva la prueba
-			comunicador.emitir(C_POSSIBLE_KEY, clave);
+			if(comunicador.emitir(C_POSSIBLE_KEY, clave) == -1) return;
+
+		delete[] uintMsgEncriptado;
 	}
 }

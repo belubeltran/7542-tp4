@@ -29,6 +29,16 @@ pthreads = si
 # Descomentar si se quiere ver como se invoca al compilador
 #verbose = si
 
+# Archivo log de Valgrind.
+S_VGLOGFILE = valgrind_server.out
+C_VGLOGFILE = valgrind_client.out
+
+# Flags para el Valgrind
+S_VGFLAGS = --tool=memcheck --trace-children=yes --track-fds=yes --time-stamp=yes --num-callers=20 --error-exitcode=42 --db-attach=no --leak-check=full --leak-resolution=med --log-file=$(S_VGLOGFILE)
+
+C_VGFLAGS = --tool=memcheck --trace-children=yes --track-fds=yes --time-stamp=yes --num-callers=20 --error-exitcode=42 --db-attach=no --leak-check=full --leak-resolution=med --log-file=$(C_VGLOGFILE)
+
+
 
 # CONFIGURACION "AVANZADA"
 ###########################
@@ -162,3 +172,30 @@ clean:
 cpplint:
 	python ./cpplint.py --filter=`cat filter_options` `find -regextype posix-egrep -regex '.*\.(h|hpp|c|cpp)'`
 	
+
+# PRUEBAS
+###################################################################
+
+p_client:
+	./client localhost:8000	
+
+ps_basic:
+	./server 8000 tests/basic 3 5
+
+ps_multiple:
+	./server 8000 tests/multiple 3 5
+
+ps_nosolution:
+	./server 8000 tests/no_solution 3 5
+
+s_valgrind_basic:
+	valgrind $(S_VGFLAGS) ./server 8000 tests/basic 3 5
+
+s_valgrind_multiple:
+	valgrind $(S_VGFLAGS) ./server 8000 tests/multiple 3 5
+
+s_valgrind_nosolution:
+	valgrind $(S_VGFLAGS) ./server 8000 tests/no_solution 3 5
+
+c_valgrind:
+	valgrind $(C_VGFLAGS) ./client localhost:8000

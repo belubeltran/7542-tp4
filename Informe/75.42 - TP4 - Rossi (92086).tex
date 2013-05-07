@@ -136,7 +136,7 @@
 
 	\item En el envío y en la recepción de datos se considera como fin de mensaje al caractér ``\textit{$\backslash$n}'' establecido por el protocolo.
 
-	\item Al provocar la salida forzada del lado del servidor mediante el ingreso de ``q$\backslash$n'' por entrada estándar, previo a la finalización se enviará a la salida estándar el estado del servidor en el momento en que se invocó su cierre.
+	\item Al provocar la salida forzada del lado del servidor mediante el ingreso de ``q$\backslash$n'' por entrada estándar, previo a la finalización se enviará a la salida estándar el estado del servidor en el momento en que se invocó su cierre. Es muy probable que al ser forzada la salida, el estado a mostrar sea \textit{Not finished}, ya que de otra manera, el servidor habría finalizado automaticamente su ejecución.
 \end{itemize}
 \medskip
 

@@ -4,10 +4,10 @@
 //   
 
 
-#include <iostream>
 #include <sstream>
 #include "server_conexion_cliente.h"
 #include "common_comunicador.h"
+
 
 
 
@@ -26,7 +26,10 @@ ConexionCliente::ConexionCliente(Socket *s, ControladorDeTareas *controlador)
 
 
 // Destructor
-ConexionCliente::~ConexionCliente() { }
+ConexionCliente::~ConexionCliente() { 
+	// Liberamos memoria utilizada por el socket
+	delete this->socket;
+}
 
 
 // Define tareas a ejecutar en el hilo.
@@ -43,7 +46,7 @@ void ConexionCliente::run() {
 
 	// Esperamos hasta recibir el mensaje correcto
 	while(instruccion != C_GET_JOB_PART)
-		comunicador.recibir(instruccion, args);
+		if(comunicador.recibir(instruccion, args) == -1) return;
 
 	if(!this->controlador->obtenerIndicacion(msg_tarea)) {
 		// No hay tarea asignada
@@ -53,14 +56,14 @@ void ConexionCliente::run() {
 	}
 
 	// Enviamos la parte del trabajo correspondiente
-	comunicador.emitir(msg_tarea);
+	if(comunicador.emitir(msg_tarea) == -1) return;
 	
 
 	// Nos ponemos a la espera de posibles claves o de indicación de
 	// finalización de tarea por parte del cliente
 	while(true) {
 		// Recibimos mensaje
-		comunicador.recibir(instruccion, args);
+		if(comunicador.recibir(instruccion, args) == -1) return;
 
 		// Caso en que se recibe una posible clave
 		if(instruccion == C_POSSIBLE_KEY)

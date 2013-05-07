@@ -4,13 +4,13 @@
 //  
 
 
-#include <iostream>
-#include <sstream>
+#include <iomanip>
 #include <math.h>
-#include "common_protocolo.h"
+#include <sstream>
+#include "server_controlador_de_tareas.h"
 #include "common_convertir.h"
 #include "common_lock.h"
-#include "server_controlador_de_tareas.h"
+#include "common_protocolo.h"
 
 
 
@@ -89,8 +89,6 @@ void ControladorDeTareas::clienteTerminoTarea() {
 
 	// Decrementamos una unidad la cantidad de clientes corriendo
 	this->clientesCorriendo--;
-
-	std::cout << "Clientes corriendo: " << this->clientesCorriendo << std::endl;
 
 	// Si se terminaron de procesar todas las partes, enviamos una señal
 	if(this->asignacionCompleta && (clientesCorriendo == 0))

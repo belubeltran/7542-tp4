@@ -4,11 +4,10 @@
 //  
 
 
+#include <iostream>
 #include <fstream>
-#include <math.h>
-#include <sstream>
-#include "server_servidor.h"
 #include "common_convertir.h"
+#include "server_servidor.h"
 
 
 
@@ -63,8 +62,15 @@ Servidor::Servidor(int puerto, const std::string& archivo,
 Servidor::~Servidor() {
 	// Liberamos espacio utilizado por cada conexión cliente
 	while(!this->clientes->estaVacia()) {
+		// Obtenemos cliente y lo eliminamos de la lista
 		ConexionCliente *cc = this->clientes->verPrimero();
 		this->clientes->eliminarPrimero();
+		
+		// Cancelamos la ejecución del hilo
+		cc->cancel();
+		// Esperamos a que finalice
+		cc->join();
+		// Liberamos memoria
 		delete cc;
 	}
 
@@ -78,15 +84,23 @@ Servidor::~Servidor() {
 // Define tareas a ejecutar en el hilo.
 // Mantiene a la escucha al servidor y acepta nuevos clientes.
 void Servidor::run() {
-	// Iniciamos la escucha del servidor
-	this->socket.crear();
-	this->socket.escuchar(MAX_CONEXIONES, this->puerto);
-	std::cout << "Servidor escuchando..." << std::endl;
-
+	try {
+		// Iniciamos la escucha del servidor
+		this->socket.crear();
+		this->socket.escuchar(MAX_CONEXIONES, this->puerto);
+	}
+	catch(char const * e) {
+		// Mensaje de error
+		std::cerr << e << std::endl;
+		// Detenemos tareas y retornamos en caso de error
+		this->controlador->detenerTareas();
+		return;
+	}
+	
 	// Nos ponemos a la espera de clientes que se conecten
 	while(this->isActive()) {
 		Socket *socketCLI = 0;
-		
+
 		// Aceptamos nuevo cliente
 		socketCLI = this->socket.aceptar();
 		
@@ -107,28 +121,39 @@ void Servidor::run() {
 }
 
 
-// Detiene la ejecución del servidor
+// Inicia la ejecución del servidor. No debe utilizarse el método start()
+// para iniciar. 
+void Servidor::iniciar() {
+	this->start();
+}
+
+
+// Espera hasta que se termine de ejecutar el servidor de forna natural.
+void Servidor::esperar() {
+	// Bloquea hasta que se terminen las tareas
+	this->controlador->esperarTerminarTareas();
+}
+
+
+// Detiene la ejecución del servidor. No debe utilizarse el método stop()
+// para detener.
 void Servidor::detener() {
+	// Detenemos hilo
 	this->stop();
 
 	// Detenemos tareas en curso
 	this->controlador->detenerTareas();
-
-	// Imprimimos situación del servidor al momento de detener la ejecución
-	this->imprimirSituacion();
 	
 	// Forzamos el cierre del socket
-	this->socket.cerrar();
-}
+	try {
+		this->socket.cerrar();
+	}
+	// Ante una eventual detención abrupta, posterior a la inicialización del
+	// socket, lanzará un error que daremos por obviado.
+	catch (...) { }
 
-
-void Servidor::iniciar() {
-	this->start();
-	std::cout << "INICIO" << std::endl;
-	this->controlador->esperarTerminarTareas();
-	std::cout << "CONCLUYERON TAREAS" << std::endl;
-	this->detener();
-	std::cout << "TERMINO" << std::endl;
+	// Esperamos a que el thread finalice su ejecución
+	this->join();
 }
 
 

@@ -7,7 +7,7 @@
 #ifndef SERVIDOR_H
 #define SERVIDOR_H
 
-#include <iostream>
+
 #include "common_thread.h"
 #include "common_socket.h"
 #include "common_lista.h"
@@ -32,10 +32,6 @@ private:
 	ControladorDeTareas *controlador;			// Controlador de tareas.
 	Lista<std::string> *claves;					// Lista de posibles claves.
 
-	// Envía a la salida estándar la situación en la que se encuentra al
-	// momento de ser invocada.
-	void imprimirSituacion();					
-
 public:
 
 	// Constructor
@@ -49,10 +45,20 @@ public:
 	// Mantiene a la escucha al servidor y acepta nuevos clientes.
 	virtual void run();
 
-	// Detiene la ejecución del servidor
+	// Inicia la ejecución del servidor. No debe utilizarse el método start()
+	// para iniciar.
+	void iniciar();
+
+	// Espera hasta que se termine de ejecutar el servidor de forna natural.
+	void esperar();
+
+	// Detiene la ejecución del servidor. No debe utilizarse el método stop()
+	// para detener.
 	void detener();
 
-	void iniciar();
+	// Envía a la salida estándar la situación en la que se encuentra al
+	// momento de ser invocada.
+	void imprimirSituacion();
 };
 
 #endif

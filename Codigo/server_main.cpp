@@ -14,7 +14,7 @@
 int main(int argc, char* argv[]) {
 	// Corroboramos cantidad de argumentos
 	if(argc != 5) {
-		std::cout << "ERROR: cantidad incorrecta de argumentos." << std::endl;
+		std::cerr << "ERROR: cantidad incorrecta de argumentos." << std::endl;
 		return 1;
 	}
 
@@ -24,14 +24,25 @@ int main(int argc, char* argv[]) {
 
 	Terminal *terminal = new Terminal(servidor);
 
-	// Iniciamos su ejecución
-	terminal->start();
+	// Iniciamos servidor
 	servidor->iniciar();
-	servidor->join();
-	terminal->cancel();
 
-	// delete servidor;
+	// Iniciamos terminal de comandos
+	terminal->start();
+
+	// Esperamos a que el servidor concluya su actividad
+	servidor->esperar();
+	servidor->detener();
+
+	// Detenido el servidor interrumpimos la ejecución del terminal
+	terminal->cancel();
+	terminal->join();
+
+	// Imprimimos situación del servidor luego de la ejecución del mismo
+	servidor->imprimirSituacion();
+
 	delete terminal;
+	delete servidor;
 
 	return 0;
 }

@@ -27,32 +27,37 @@ Comunicador::Comunicador(Socket *socket) : socket(socket) { }
 // PRE: 'instruccion' es una cadena que identifica la instrucción a emitir;
 // 'args' son los argumentos de dicha instrucción separadas entre si por
 // un espacio.
-void Comunicador::emitir(const std::string& instruccion, 
+// POST: devuelve 0 si se ha realizado el envio correctamente o -1 en caso
+// de error.
+int Comunicador::emitir(const std::string& instruccion, 
 	const std::string& args) {
 	// Armamos mensaje a enviar
 	std::string msg = instruccion + " " + args + FIN_MENSAJE;
 	
 	// Enviamos el mensaje
-	this->socket->enviar(msg.c_str(), msg.size());
+	return this->socket->enviar(msg.c_str(), msg.size());
 }
 
 
 // Emite un mensaje.
 // PRE: 'msg' es el mensaje que se desea enviar.
-void Comunicador::emitir(const std::string& msg) {
+// POST: devuelve 0 si se ha realizado el envio correctamente o -1 en caso
+// de error.
+int Comunicador::emitir(const std::string& msg) {
 	// Armamos mensaje a enviar
 	std::string msg_n = msg + FIN_MENSAJE;
 	
 	// Enviamos el mensaje
-	this->socket->enviar(msg_n.c_str(), msg_n.size());
+	return this->socket->enviar(msg_n.c_str(), msg_n.size());
 }
 
 
 // Recibe una instrucción.
 // POST: se almacenó la instrucción recibida en 'instruccion' y los
 // argumentos en args, los cuales se encuentran separados entre si por un
-// espacio. De producirse un error, 'instruccion' y 'args' queda vacíos.
-void Comunicador::recibir(std::string& instruccion, std::string& args) {
+// espacio. De producirse un error, 'instruccion' y 'args' queda vacíos y
+// se retorna -1. En caso de exito se devuelve 0.
+int Comunicador::recibir(std::string& instruccion, std::string& args) {
 	// Variable auxiliar para armar mensaje
 	std::stringstream msg_in;
 	// Limpiamos argumentos que recibiran datos
@@ -65,7 +70,7 @@ void Comunicador::recibir(std::string& instruccion, std::string& args) {
 		char bufout[1];
 
 		// Si se produce un error, devolvemos una instrucción vacía
-		if(this->socket->recibir(bufout, 1) == -1) return;
+		if(this->socket->recibir(bufout, 1) == -1) return -1;
 		
 		// Si se recibió el caractér de fin de mensaje, salimos
 		if(bufout[0] == FIN_MENSAJE) break;
@@ -80,4 +85,6 @@ void Comunicador::recibir(std::string& instruccion, std::string& args) {
 
 	// Eliminamos el espacio inicial sobrante de los argumentos
 	if(args != "") args.erase(0, 1);
+
+	return 0;
 }

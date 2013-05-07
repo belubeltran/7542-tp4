@@ -11,6 +11,19 @@
 
 
 
+namespace {
+	// Constantes que definen los comandos válidos
+	const std::string CMD_SALIR = "q";
+}
+
+
+
+
+/* ****************************************************************************
+ * DEFINICIÓN DE LA CLASE
+ * ***************************************************************************/
+
+
 // Constructor
 Terminal::Terminal(Servidor *servidor) : servidor(servidor) { }
 
@@ -23,8 +36,11 @@ void Terminal::run() {
 		std::string comando;
 		getline(std::cin, comando);
 
-		if(comando == "q") {
+		if(comando == CMD_SALIR) {
+			// Si el servidor se encuentra corriendo, lo detenemos
 			this->servidor->detener();
+			
+			// Detenemos la terminal
 			this->stop();
 		}
 	}

@@ -16,7 +16,7 @@
 int main(int argc, char* argv[]) {
 	// Corroboramos cantidad de argumentos
 	if(argc != 2) {
-		std::cout << "ERROR: cantidad incorrecta de argumentos." << std::endl;
+		std::cerr << "ERROR: cantidad incorrecta de argumentos." << std::endl;
 		return 1;
 	}
 
@@ -35,19 +35,14 @@ int main(int argc, char* argv[]) {
 	getline(argumento, sPuerto, ':');
 	puerto = Convertir::stoi(sPuerto);
 
-	try {
-		// Creamos el cliente
-		Cliente *cliente = new Cliente(nombreHost, puerto);
+	// Creamos el cliente
+	Cliente *cliente = new Cliente(nombreHost, puerto);
 
-		// Iniciamos su ejecución
-		cliente->start();
-		cliente->join();
+	// Iniciamos su ejecución
+	cliente->start();
+	cliente->join();
 
-		delete cliente;
-	}
-	catch (const char* e) {
-		std::cout << e << std::endl;
-	}
-	
+	delete cliente;
+
 	return 0;
 }

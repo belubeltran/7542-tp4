@@ -10,13 +10,14 @@
 
 
 
+
 /* ****************************************************************************
  * DEFINICIÓN DE LA CLASE
  * ***************************************************************************/
 
 
 // Constructor
-Thread::Thread() : status(true) { }
+Thread::Thread() : status(false) { }
 
 
 // Constructor privado
@@ -30,6 +31,7 @@ Thread::~Thread() { }
 // Inicia el hilo
 void Thread::start() {
 	pthread_create(&this->thread, 0, callback, this);
+	this->status = true;
 }
 
 

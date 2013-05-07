@@ -11,10 +11,14 @@
 
 
 #include <string.h>
-#include <stdlib.h>
 #include <stdint.h>
-#include <iomanip>
 
+
+
+
+/* ****************************************************************************
+ * DECLARACIÓN DE LA CLASE
+ * ***************************************************************************/
 
 
 class Convertir {
