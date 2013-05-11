@@ -41,6 +41,10 @@ public:
 
 	// Define tareas a ejecutar en el hilo.
 	virtual void run();
+
+	// Detiene la conexión con el cliente. No debe utilizarse el método stop()
+	// para detener, sino este mismo en su lugar.
+	void detener();
 };
 
 #endif

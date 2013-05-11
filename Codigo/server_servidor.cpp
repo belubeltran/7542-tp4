@@ -39,19 +39,8 @@ Servidor::Servidor(int puerto, std::string& msg,
 
 // Destructor
 Servidor::~Servidor() {
-	// Liberamos espacio utilizado por cada conexión cliente
-	while(!this->clientes->estaVacia()) {
-		// Obtenemos cliente y lo eliminamos de la lista
-		ConexionCliente *cc = this->clientes->verPrimero();
-		this->clientes->eliminarPrimero();
-		
-		// Cancelamos la ejecución del hilo
-		cc->cancel();
-		// Esperamos a que finalice
-		cc->join();
-		// Liberamos memoria
-		delete cc;
-	}
+	// Concluimos la conexión con clientes existentes
+	this->cerrarConexionesConClientes();
 
 	// Liberamos espacio utilizado por atributos
 	delete this->clientes;
@@ -71,9 +60,8 @@ void Servidor::run() {
 	catch(char const * e) {
 		// Mensaje de error
 		std::cerr << e << std::endl;
-		// Detenemos tareas y retornamos en caso de error
-		this->controlador->detenerTareas();
-		return;
+		// Detenemos servidor de inmediato
+		this->detener();
 	}
 	
 	// Nos ponemos a la espera de clientes que se conecten
@@ -108,31 +96,22 @@ void Servidor::iniciar() {
 }
 
 
-// Espera hasta que se termine de ejecutar el servidor de forna natural.
-// POST: devuelve true al terminar.
-bool Servidor::esperar() {
-	// Bloquea hasta que se terminen las tareas
-	this->controlador->esperarTerminarTareas();
-	return true;
-}
-
-
 // Detiene la ejecución del servidor. No debe utilizarse el método stop()
 // para detener.
 void Servidor::detener() {
 	// Detenemos hilo
 	this->stop();
 
-	// Detenemos tareas en curso
-	this->controlador->detenerTareas();
-	
-	// Forzamos el cierre del socket
+	// Forzamos el cierre del socket para evitar nuevas conexiones entrantes
 	try {
 		this->socket.cerrar();
 	}
-	// Ante una eventual detención abrupta, posterior a la inicialización del
+	// Ante una eventual detención abrupta, previa a la inicialización del
 	// socket, lanzará un error que daremos por obviado.
 	catch(...) { }
+
+	// Concluimos la conexión con clientes existentes
+	this->cerrarConexionesConClientes();
 }
 
 
@@ -153,5 +132,25 @@ void Servidor::imprimirSituacion() {
 		// Se encontraron múltiples claves
 		else
 			std::cout << "Multiple keys found" << std::endl;
+	}
+}
+
+
+// Cierra todas las conexiones existentes con clientes y elimina todo 
+// registro de estos,quedando vacía la lista de clientes.
+void Servidor::cerrarConexionesConClientes() {
+	// Detenemos y liberamos espacio utilizado por cada conexión cliente,
+	// dejando vacía la lista de clientes activos.
+	while(!this->clientes->estaVacia()) {
+		// Obtenemos cliente y lo eliminamos de la lista
+		ConexionCliente *cc = this->clientes->verPrimero();
+		this->clientes->eliminarPrimero();
+		
+		// Detenemos conexión con el cliente
+		cc->detener();
+		// Esperamos a que finalice
+		cc->join();
+		// Liberamos memoria
+		delete cc;
 	}
 }

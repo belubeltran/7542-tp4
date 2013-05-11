@@ -124,18 +124,13 @@ int main(int argc, char* argv[]) {
 	Servidor *servidor = new Servidor(atoi(argv[1]), msg, atoi(argv[3]), 
 		atoi(argv[4]));
 
-	// Terminal *terminal = new Terminal(servidor);
-
 	try {
 		// Iniciamos servidor
 		servidor->iniciar();
 	}
 	catch(char const * e) {
 		std::cerr << e << std::endl;
-
-		// delete terminal;
 		delete servidor;
-
 		return 1;
 	}
 

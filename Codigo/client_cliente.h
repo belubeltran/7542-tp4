@@ -8,7 +8,6 @@
 #define CLIENTE_H
 
 
-#include "common_thread.h"
 #include "common_socket.h"
 
 
@@ -19,7 +18,7 @@
  * ***************************************************************************/
 
 
-class Cliente : public Thread {
+class Cliente{
 private:
 
 	Socket socket;						// Socket con el que se comunica
@@ -43,9 +42,8 @@ public:
 	// Destructor
 	~Cliente();
 
-	// Define tareas a ejecutar en el hilo.
 	// Mantiene la comunicación con el servidor.
-	virtual void run();
+	void ejecutar();
 };
 
 #endif

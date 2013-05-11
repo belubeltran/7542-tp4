@@ -75,5 +75,3 @@ std::string Convertir::itos(const int i) {
     s << i;
     return s.str();
 }
-
-

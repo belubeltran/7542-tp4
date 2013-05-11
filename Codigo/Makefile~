@@ -207,7 +207,7 @@ p1_multiple:
 	sudo chmod +x run_1.sh free_port_1.sh;./run_1.sh 127.0.0.1 $(./free_port_1.sh 10001) no-valgrind single tests/multiple 3 5
 
 p1_nosolution:
-	sudo chmod +x run_1.sh free_port_1.sh;./run_1.sh 127.0.0.1 $(./free_port_1.sh 10001) no-valgrind single tests/no_solution 3 5
+	sudo chmod +x run_1.sh free_port_1.sh;./run_1.sh 127.0.0.1 $(./free_port_1.sh 10001) no-valgrind single tests/nosolution 3 5
 
 p2_basic:
 	sudo chmod +x run_2.sh free_port_2.sh;./run_2.sh 127.0.0.1 $(./free_port_2.sh 11001) valgrind single tests/basic 3 5

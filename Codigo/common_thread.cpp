@@ -31,7 +31,6 @@ Thread::~Thread() { }
 // Inicia el hilo
 void Thread::start() {
 	pthread_create(&this->thread, 0, callback, this);
-	this->status = true;
 }
 
 
@@ -65,6 +64,8 @@ bool Thread::isActive() {
 // Ejecuta el método run().
 // PRE: 'threadID' es un puntero al thread.
 void* Thread::callback(void *threadID) {
+	((Thread*)threadID)->status = true;
 	((Thread*)threadID)->run();
+	((Thread*)threadID)->status = false;
 	return 0;
 }

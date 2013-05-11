@@ -32,6 +32,10 @@ private:
 	ControladorDeTareas *controlador;			// Controlador de tareas.
 	Lista<std::string> *claves;					// Lista de posibles claves.
 
+	// Cierra todas las conexiones existentes con clientes y elimina todo 
+	// registro de estos,quedando vacía la lista de clientes.
+	void cerrarConexionesConClientes();
+
 public:
 
 	// Constructor
@@ -48,10 +52,6 @@ public:
 	// Inicia la ejecución del servidor. No debe utilizarse el método start()
 	// para iniciar. En caso de error lanza una excepción.
 	void iniciar();
-
-	// Espera hasta que se termine de ejecutar el servidor de forna natural.
-	// POST: devuelve true al terminar.
-	bool esperar();
 
 	// Detiene la ejecución del servidor. No debe utilizarse el método stop()
 	// para detener.

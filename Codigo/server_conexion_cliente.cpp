@@ -60,9 +60,9 @@ void ConexionCliente::run() {
 
 	// Nos ponemos a la espera de posibles claves o de indicación de
 	// finalización de tarea por parte del cliente
-	while(true) {
+	while(this->isActive()) {
 		// Recibimos mensaje
-		if(comunicador.recibir(instruccion, args) == -1) return;
+		if(comunicador.recibir(instruccion, args) == -1) break;
 
 		// Caso en que se recibe una posible clave
 		if(instruccion == C_POSSIBLE_KEY)
@@ -75,4 +75,20 @@ void ConexionCliente::run() {
 
 	// Cerramos conexión
 	this->socket->cerrar();
+}
+
+
+// Detiene la conexión con el cliente. No debe utilizarse el método stop()
+// para detener, sino este mismo en su lugar.
+void ConexionCliente::detener() {
+	// Detenemos hilo
+	this->stop();
+
+	// Forzamos el cierre del socket y destrabamos espera de recepcion de datos
+	try {
+		this->socket->cerrar();
+	}
+	// Ante una eventual detención abrupta, previa a la inicialización del
+	// socket, lanzará un error que daremos por obviado.
+	catch(...) { }
 }

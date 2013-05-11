@@ -30,9 +30,8 @@ Cliente::~Cliente() {
 }
 
 
-// Define tareas a ejecutar en el hilo.
 // Mantiene la comunicación con el servidor.
-void Cliente::run() {
+void Cliente::ejecutar() {
 	// Creamos socket
 	this->socket.crear();
 
@@ -49,7 +48,7 @@ void Cliente::run() {
 	Comunicador comunicador(&this->socket);
 	
 	// Enviamos petición de parte de trabajo
-	if(comunicador.emitir(C_GET_JOB_PART, "") == -1) return;
+	if(comunicador.emitir(C_GET_JOB_PART) == -1) return;
 
 	// Variables de procesamiento
 	std::string instruccion;
@@ -57,7 +56,7 @@ void Cliente::run() {
 
 	// Recibimos respuesta del servidor
 	if(comunicador.recibir(instruccion, args) == -1) return;
-
+	
 	// Caso en que no hay trabajo para realizar
 	if(instruccion == S_NO_JOB_PART) {
 		// Desconectamos el socket y salimos

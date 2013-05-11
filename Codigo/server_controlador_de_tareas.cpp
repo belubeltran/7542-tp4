@@ -77,6 +77,7 @@ bool ControladorDeTareas::obtenerIndicacion(std::string& msg_tarea) {
 void ControladorDeTareas::ingresarClave(std::string clave) {
 	// Bloqueamos el mutex
 	Lock l(this->m);
+	
 	this->claves->insertarUltimo(clave);
 }
 
@@ -88,37 +89,15 @@ void ControladorDeTareas::clienteTerminoTarea() {
 
 	// Decrementamos una unidad la cantidad de clientes corriendo
 	this->clientesCorriendo--;
-
-	// Si se terminaron de procesar todas las partes, enviamos una señal
-	if(this->asignacionCompleta && (clientesCorriendo == 0))
-		l.signal();
-}
-
-
-// Método que al ser invocado se bloquea hasta que se hayan finalizado
-// los procesamientos de las partes correspondientes a las tareas.
-void ControladorDeTareas::esperarTerminarTareas() {
-	// Bloqueamos el mutex
-	Lock l(this->m);
-
-	// Nos ponemos a la espera de que se finalicen las tareas habiéndose
-	// asignado todas las partes a procesar
-	if(!this->asignacionCompleta || (this->clientesCorriendo > 0))
-		l.wait();
-}
-
-
-// Detiene todas las tareas
-void ControladorDeTareas::detenerTareas() {
-	Lock l(this->m);
-	// Destrabamos la espera de la finalización de tareas
-	l.signal();
 }
 
 
 // Corrobora si se han terminado las tareas.
 // POST: devuelve true si se completaron o false en su defecto.
 bool ControladorDeTareas::seCompletaronTareas() {
+	// Bloqueamos el mutex
+	Lock l(this->m);
+
 	return (this->asignacionCompleta && (clientesCorriendo == 0));
 }
 

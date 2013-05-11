@@ -75,13 +75,10 @@ int main(int argc, char* argv[]) {
 	puerto = Convertir::stoi(sPuerto);
 
 	// Creamos el cliente
-	Cliente *cliente = new Cliente(nombreHost, puerto);
+	Cliente cliente(nombreHost, puerto);
 
 	// Iniciamos su ejecución
-	cliente->start();
-	cliente->join();
-
-	delete cliente;
+	cliente.ejecutar();
 
 	return 0;
 }

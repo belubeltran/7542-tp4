@@ -154,7 +154,7 @@
 % DISEÑO - Cliente
 \subsection{Cliente}
 	
-	Se ha decidido que la clase Cliente sea un Thread de manera de dejar la posibilidad de, en un futuro, agregar un terminal que permita al usuario del lado cliente interactuar con esta, ya sea, viendo el estado del procesamiento, detener el procesamiento manualmente, entre otras acciones posibles.
+	Sin duda alguna, este ente del esquema es el menos complejo ya que su tarea se reduce a establecer inicialmente una conexión con el servidor, para luego solicitarle una parte del trabajo a realizar. En el caso de que el servidor le indique que no trabajo disponible, el cliente simplemente finalizará su ejecución. En el otro caso, recibirá el mensaje encriptado y el rango de claves y por fuerza bruta probara cada una de ellas, notificando a través del socket cuales son posibles claves. Finalizadas las pruebas termina su ejecución.
 	\bigskip	
 
 
@@ -162,7 +162,12 @@
 % DISEÑO - Servidor
 \subsection{Servidor}
 
-	\bigskip
+	Para el funcionamiento del servidor, se ha propuesto utilizar una lógica muy simple. Esta consiste en tener a la clase \textit{Servidor}, la cual es un hilo de ejecución, esperando por solicitudes de conexión por parte de los clientes. Cuando se produce una situación como la anterior, el mismo servidor se encarga de crear un objeto de la clase \textit{ConexionCliente}. A este objeto se le pasa el file descriptor correspondiente al nuevo socket que mantendrá en contacto al cliente con este último objeto. Este será almacenado en una lista de conexiones existentes, para permitir al servidor saber que conexiones debe cerrar cuando llegue el momento de concluir la ejecución.
+	\par
+	El objeto de la clase \textit{ConexionCliente} ahora es el único encargado de mantener una comunicación con su par del otro lado del socket. Entre estos se hará el envío de mensajes protocolares los cuales permitiran la asignación de tareas, notificación de posibles claves, entre otras. 
+	\par
+	Por otro lado, los objetos mencionados en el párrafo anterior son supervisados por la clase \textit{ControladorDeTareas}, la cual es un ente creado por el servidor, y que posee la responsabilidad de, ante una petición, asignar trabajo, de ser posible, al cliente. Además es el que, una vez arrivada una clave, la recibe para almacenarla, permitiendole al servidor posteriormente dar cuenta de ello.
+	\bigskip\bigskip
 
 
 
@@ -170,30 +175,10 @@
 % ESQUEMA DEL DISEÑO
 \section{Esquema del diseño}
 
-	A continuación, en la \textit{Figura 2}, se ilustra el diagrama de clases principal correspondiente al lado Servidor, donde se representa la relación entre las entidades que participan en dicha parte del sistema. 
-
-%\newpage
-% Figura 2
-%\begin{figure}[h]
-%	\centering
-%	\includegraphics[width=0.968976\textwidth]{images/diagrama02.png}
-%	\medskip
-%	\caption{Diagrama de flujo representativo de la solución.}
-%\end{figure}
-
-
-	En la \textit{Figura 3}, se ilustra el diagrama de clases principal correspondiente al lado Cliente, mostrando aquí también la relación entre entidades que partician en esta otra parte del sistema.
-
-%\newpage
-% Figura 3
-%\begin{figure}[h]
-%	\centering
-%	\includegraphics[width=0.968976\textwidth]{images/diagrama02.png}
-%	\medskip
-%	\caption{Diagrama de flujo representativo de la solución.}
-%\end{figure}
-\bigskip\bigskip
-
+	A continuación, en la \textit{Figura 1}, se ilustra el diagrama de clases principal, donde se pueden ver las clases que intervienen tanto en el
+	servidor como así también en el cliente. Cabe destacar que se han omitido,
+	para mayor comprensión, otras clases secundarias pero que hacen a la totalidad del sistema. 
+	\bigskip\bigskip\bigskip\bigskip
 
 
 
@@ -205,6 +190,15 @@
 	\end{thebibliography}
 
 \newpage
+% Figura 1
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.968976\textwidth]{images/diagrama_clases.png}
+	\medskip
+	\caption{Diagrama de clases principales que representan la solución}
+\end{figure}
+\bigskip
+
 
 
 \end{document}

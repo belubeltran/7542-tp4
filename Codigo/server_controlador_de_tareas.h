@@ -68,13 +68,6 @@ public:
 	// Permite a un cliente notificar que ha finalizado su tarea
 	void clienteTerminoTarea();
 
-	// Método que al ser invocado se bloquea hasta que se hayan finalizado
-	// los procesamientos de las partes correspondientes a las tareas.
-	void esperarTerminarTareas();
-
-	// Detiene todas las tareas
-	void detenerTareas();
-
 	// Corrobora si se han terminado las tareas.
 	// POST: devuelve true si se completaron o false en su defecto.
 	bool seCompletaronTareas();
