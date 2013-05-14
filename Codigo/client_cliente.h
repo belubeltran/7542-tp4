@@ -18,7 +18,7 @@
  * ***************************************************************************/
 
 
-class Cliente{
+class Cliente {
 private:
 
 	Socket socket;						// Socket con el que se comunica
